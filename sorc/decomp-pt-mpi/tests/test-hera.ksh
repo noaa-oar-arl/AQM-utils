@@ -2,20 +2,28 @@
 
 PDY=2019071512
 UTIL_BASE=/scratch1/RDARCH/rda-arl-gpu/YouHua.Tang/UFS/AQM-utils
-DATA_BASE=/scratch1/RDARCH/rda-arl-gpu/YouHua.Tang/expt_dirs/uwm2_cold_1day
+DATA_BASE=/scratch1/RDARCH/rda-arl-gpu/YouHua.Tang/expt_dirs/aqm_cold_aqmna13_1day
 
 . $DATA_BASE/var_defns.sh
-. $DATA_BASE/config.sh
 
-export NX
-export NY
+export NX=$ESGgrid_NX
+export NY=$ESGgrid_NY
 export LAYOUT_X
 export LAYOUT_Y
 export FCST_LEN_HRS
 
 let NSTEP=$FCST_LEN_HRS+1
 
-cd $DATA_BASE/$PDY
+if [ $RUN_ENVIR = 'nco' ]; then
+ RUN_DIR=$STMP/tmpnwprd/$RUN/$PDY
+elif [ $RUN_ENVIR = 'community' ]; then
+ RUN_DIR=$DATA_BASE/$PDY
+else
+ echo " unknown run environment $RUN_ENVIR "
+ exit 1
+fi 
+
+cd $RUN_DIR
 if [ ! -s PT/pt-$PDY.nc ]; then 
   mkdir PT
   cd PT
@@ -33,7 +41,7 @@ cd $DATA_BASE/$PDY
 if [ ! -s PT/pt-0000.nc ]; then 
  let NPE=$LAYOUT_X*$LAYOUT_Y
 
- export TOPO=$DATA_BASE/orog/C775_oro_data.tile7.halo0.nc
+ export TOPO=$NEXUS_FIX_DIR/$NEXUS_GRID_FN
  export PT_IN=$DATA_BASE/$PDY/PT/pt-$PDY.nc
 
  export SLURM_ACCOUNT=naqfc

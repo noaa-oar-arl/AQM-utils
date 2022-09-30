@@ -91,16 +91,16 @@
 ! read topo file lat/lon info
 !  print*,'read topofile',my_rank,trim(topofile) 
   call check(nf90_open(trim(topofile),nf90_nowrite,ncid2))
-  call check(nf90_inq_dimid(ncid2,'lon',iddim_lon))
+  call check(nf90_inq_dimid(ncid2,'grid_xt',iddim_lon))
   call check(nf90_inquire_dimension(ncid2,iddim_lon,len=nx2))
-  call check(nf90_inq_dimid(ncid2,'lat',iddim_lat))
+  call check(nf90_inq_dimid(ncid2,'grid_yt',iddim_lat))
   call check(nf90_inquire_dimension(ncid2,iddim_lat,len=ny2))
   if(nx.ne.nx2.or.ny.ne.ny2) then
    print*,'inconsistent topo file dimension'
    stop
   endif 
-  call check(nf90_inq_varid(ncid2,'geolat',idvar_geolat))
-  call check(nf90_inq_varid(ncid2,'geolon',idvar_geolon))
+  call check(nf90_inq_varid(ncid2,'grid_latt',idvar_geolat))
+  call check(nf90_inq_varid(ncid2,'grid_lont',idvar_geolon))
   allocate(xlon(nx,ny),xlat(nx,ny))
   call check(nf90_get_var(ncid2,idvar_geolon,xlon))
   call check(nf90_get_var(ncid2,idvar_geolat,xlat))
@@ -179,8 +179,8 @@
 ! -widen two grid cells  
   jstart2=max(1,jstart-2)
   jend2=min(ny,jend+2)
-  istart2=max(1,istart+2)
-  iend2=max(nx,iend+2)
+  istart2=max(1,istart-2)
+  iend2=min(nx,iend+2)
   
   m=0
   do n=1,nstack
