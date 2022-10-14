@@ -37,12 +37,12 @@ if [ ! -s $DATA_BASE/$PDY/PT/pt-$PDY.nc ]; then
   exit 1
 fi
 
-cd $DATA_BASE/$PDY
+cd $RUN_DIR
 if [ ! -s PT/pt-0000.nc ]; then 
  let NPE=$LAYOUT_X*$LAYOUT_Y
 
  export TOPO=$NEXUS_FIX_DIR/$NEXUS_GRID_FN
- export PT_IN=$DATA_BASE/$PDY/PT/pt-$PDY.nc
+ export PT_IN=$RUN_DIR/PT/pt-$PDY.nc
 
  export SLURM_ACCOUNT=naqfc
  time srun -n $NPE --time=30:00 -q debug $UTIL_BASE/exec/decomp-ptemis-mpi
