@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # merge NEI stack and inline point sources for each sector
 
 # import calendar
@@ -22,11 +22,11 @@ log.setLevel(logging.WARNING)
 
 REF_YEAR = 2016
 
-BASE_DIR_CONUS = Path("/lfs/h2/emc/ptmp/Youhua.Tang/nei2016v1-pt/12US1")
+BASE_DIR_CONUS = Path("/lfs/h2/emc/physics/noscrub/Youhua.Tang/nei2016v1-pt/12US1")
 
-BASE_DIR_HI = Path("/lfs/h2/emc/ptmp/Youhua.Tang/nei2016v1-pt/3HI1")
+BASE_DIR_HI = Path("/lfs/h2/emc/physics/noscrub/Youhua.Tang/nei2016v1-pt/3HI1")
 
-BASE_DIR_AK = Path("/lfs/h2/emc/ptmp/Youhua.Tang/nei2016v1-pt/9AK1")
+BASE_DIR_AK = Path("/lfs/h2/emc/physics/noscrub/Youhua.Tang/nei2016v1-pt/9AK1")
 
 POINT_DIM_NAME = "nlocs"
 
@@ -68,7 +68,7 @@ SECTORS_AK = ["ptegu", "ptnonipm", "pt_oilgas", "cmv_c1c2_9ak1", "cmv_c3_9ak1", 
 HOLIDAY_MD = {
     #new: "0101 0102 XXXX XXXX XXXX XXXX 0704 0705 XXXX XXXX XXXX XXXX XXXX 1224 1225 1226".split(),
     2015: "0101 0102 0403 0404 0525 0526 0704 0705 0907 0908 1125 1126 1127 1224 1225 1226".split(),
-    2016: "0101 0102 0325 0326 0530 0531 0704 0705 0905 0906 1123 1124 1125 1224 1225 1226".split(),
+    2016: "0101 0102 0325 0326 0530 0531 0704 0705 0905 0906 1124 1125 1126 1224 1225 1226".split(),
     2017: "0101 0102 0414 0415 0529 0530 0704 0705 0904 0905 1122 1123 1124 1224 1225 1226".split(),
     2018: "0101 0102 0330 0331 0528 0529 0704 0705 0903 0904 1121 1122 1123 1224 1225 1226".split(),
     2019: "0101 0102 0419 0420 0527 0528 0704 0705 0902 0903 1127 1128 1129 1224 1225 1226".split(),
@@ -76,8 +76,9 @@ HOLIDAY_MD = {
     2021: "0101 0102 0402 0403 0531 0601 0704 0705 0906 0907 1124 1125 1126 1224 1225 1226".split(),
     2022: "0101 0102 0415 0416 0530 0531 0704 0705 0905 0906 1123 1124 1125 1224 1225 1226".split(),
     2023: "0101 0102 0407 0408 0529 0530 0704 0705 0904 0905 1122 1123 1124 1224 1225 1226".split(),
-    2024: "0101 0102 0329 0330 0527 0528 0704 0705 0902 0903 1127 1128 1129 1224 1225 1226".split(),
+    2024: "0101 0102 0329 0330 0527 0529 0704 0705 0902 0903 1127 1128 1129 1224 1225 1226".split(),
     2025: "0101 0102 0418 0419 0526 0527 0704 0705 0901 0902 1126 1127 1128 1224 1225 1226".split(),
+    2026: "0101 0102 0403 0404 0525 0526 0704 0705 0907 0908 1125 1126 1127 1224 1225 1226".split(),    
 }
 # Holidays + day after:
 # - New Years
@@ -272,8 +273,11 @@ class SectorFiles:
                 fps_m_nh.append(fp)
 
         if len(dates_m_nh) == 5:
+            # Some such ptnonipm have 2 days after Thanksgiving (2016-11-26) and Christmas (2016-12-27).
+            # We aren't treating these as holidays, so just drop for now.
+            # TODO: check that the one we are dropping here is indeed one of those two?
             s_dates = "\n".join(f"- {d}" for d in dates_m_nh)
-            log.warning(f"dropping the last of these dates in order to have 4 only:\n{s_dates}")
+            log.warning(f"dropping the last of these non-holiday dates in order to have 4 only:\n{s_dates}")
             dates_m_nh = dates_m_nh[:-1]
             fps_m_nh = fps_m_nh[:-1]
 
@@ -293,7 +297,18 @@ class SectorFiles:
                 d_r = d
                 fp_r = self.inln_mole_fps[d]
             else:
-                # Only four days per month (no holidays)
+                if len(dates_m) > 4:
+                    # e.g. day before Thanksgiving, which we consider holiday,
+                    # but ptnonipm has Thanksgiving and the two days after
+                    s_dates = "\n".join(f"- {d}" for d in dates_m)
+                    log.warning(
+                        "for holiday without specific file, "
+                        f"dropping the last of these dates in order to have 4 only:\n{s_dates}"
+                    )
+                    dates_m = dates_m[:4]
+                    fps_m = fps_m[:4]
+		
+		# Only four days per month (no holidays)
                 # (seems to be Mon, Tue, Sat, Sun)
                 assert len(dates_m) == 4
                 iwds_r = [d.dow for d in dates_m]
