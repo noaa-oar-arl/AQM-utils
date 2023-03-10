@@ -133,7 +133,7 @@ site blocking list          = none
 
 * Expected number of forecast hours.
 
-number of forecast hours    = 7
+number of forecast hours    = 6
 
 *-------------------------------------------------------
 * Select analog variables.

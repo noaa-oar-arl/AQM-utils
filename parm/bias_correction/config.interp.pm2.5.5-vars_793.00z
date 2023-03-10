@@ -61,7 +61,7 @@ station file         = data/site-lists.interp/sites.valid.pm25.20220724.12z.list
 grid coordinate file = data/coords/aqm.t12z.chem_sfc.f000.nc
 interp file template = out/pm25/YYYY/forecasts.interp.YYYYMMDD.CCz.nc
 
-number of forecast hours = 7
+number of forecast hours = 6
 
 File table:
 *

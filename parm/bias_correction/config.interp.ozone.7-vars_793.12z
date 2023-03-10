@@ -64,7 +64,7 @@ station file         = data/site-lists.interp/sites.valid.ozone.20220724.12z.lis
 grid coordinate file = data/coords/aqm.t12z.chem_sfc.f000.nc
 interp file template = out/ozone/YYYY/forecasts.interp.YYYYMMDD.CCz.nc
 
-number of forecast hours = 73
+number of forecast hours = 72
 
 File table:
 *

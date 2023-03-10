@@ -133,7 +133,7 @@ site blocking list          = site_blocking.pm2.5.2021.0427.2-sites.txt
 
 * Expected number of forecast hours.
 
-number of forecast hours    = 7
+number of forecast hours    = 6
 
 *-------------------------------------------------------
 * Select analog variables.

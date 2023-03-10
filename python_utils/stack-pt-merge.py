@@ -539,7 +539,7 @@ def main(date_str, *, nstep=NSTEP_DEFAULT,
     tstep = 1  # hourly
 
     if not stack_groups_only:
-        time_dim = c.createDimension("time", ntime)
+        time_dim = c.createDimension("time", None) # unlimited for ntime
         time_coord = c.createVariable("TIME", np.int32, ("time",))
         time_coord.units = "hours"
         time_coord.description = f"Time step (hours since {date_start})"
@@ -594,12 +594,12 @@ def main(date_str, *, nstep=NSTEP_DEFAULT,
             ]:
                 v = a.variables[vn]
                 if vn not in vars_:
-                    vars_[vn] = c.createVariable(vn, np.float32, (POINT_DIM_NAME,))
+                    vars_[vn] = c.createVariable(vn, np.float32, (POINT_DIM_NAME,), fill_value=0.)
                     vars_[vn].units = v.units.strip()
                     vars_[vn].long_name = v.long_name.strip()
                     vars_[vn].description = v.var_desc.strip()
                     # vars_[vn].sector = sector_clean  # multiple!
-                    vars_[vn][:] = np.nan
+                    vars_[vn][:] = 0.
                 vars_[vn][point_slice] = v[:].data.squeeze()
 
             if stack_groups_only:
@@ -625,7 +625,7 @@ def main(date_str, *, nstep=NSTEP_DEFAULT,
                     v = b.variables[vn]
                     if vn not in vars_:
                         vars_[vn] = c.createVariable(vn, np.float32, ("time", POINT_DIM_NAME),
-                            zlib=True, complevel=1
+                            zlib=True, complevel=4, fill_value=0.
                         )
                             # Note: `zlib=True` is deprecated in favor of `compression='zlib'`
                             # Note: complevel=4 is default, 0--9 with 9 most compression
@@ -633,7 +633,7 @@ def main(date_str, *, nstep=NSTEP_DEFAULT,
                         vars_[vn].long_name = v.long_name.strip()
                         vars_[vn].description = v.var_desc.strip()
                         # vars_[vn].sector = sector_clean
-                        vars_[vn][:] = np.nan
+                        vars_[vn][:] = 0.
                     vars_[vn][time_slice, point_slice] = v[time_slice_in, :].data.squeeze()
 
             # Increment (move along point dim in the output file)
