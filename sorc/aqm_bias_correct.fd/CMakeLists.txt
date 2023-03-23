@@ -172,6 +172,10 @@ target_link_libraries(
   bufr::bufr_4
 )
 
+if(OpenMP_Fortran_FOUND)
+  target_link_libraries(${exe_name} PUBLIC OpenMP::OpenMP_Fortran)
+endif()
+
 target_link_libraries(${exe_name} PRIVATE ${lib_name})
 
 install(TARGETS ${exe_name})
