@@ -7,6 +7,8 @@
 !            3) calculate daily 1-hr max and 24-hr ave PM2.5
 !  11/20/2022 Jianping Huang
 !            modified for post-processing aqm v7.0 (ufs-aqm) hourly output files
+!  08/06/2024 Jianping Huang
+!            modified for post-processing aqm v8.0 (AQM_NA_9m) hourly output files
 !
 !------------------------------------------------------------------------------
       program aqm_post_grib2
@@ -37,7 +39,7 @@
       integer    ierr,ier
 ! for grib2 
       integer, parameter   :: max_bytes=20000000
-      integer, parameter   :: nx=775,ny=488
+      integer, parameter   :: nx=1128,ny=698
       integer, parameter   :: ncmaq=3
 !
       integer listsec0(2)
@@ -71,7 +73,7 @@
     integer status
 
     character chtmp*3
-    character grib_id*3
+    character grib_id*4
 
     character(*), parameter :: calendar  = 'gregorian'
     character*16 cmaqspec(ncmaq),varlist(ncmaq)
@@ -198,9 +200,9 @@
       nowtime=(ihour+1)*10000
       do nt=1,nhours
 
-       GRID=793
-       im=775
-       jm=488
+       GRID=1144
+       im=1128
+       jm=698
        jf=im*jm
 !
       base_year=iyear
@@ -210,7 +212,7 @@
       ifilw=52
 
       write(chtmp,'(i3.3)')nt      
-      write(grib_id,'(i3.3)')id_gribdomain
+      write(grib_id,'(i4.4)')id_gribdomain
       call baopen(ifilw,trim(outfile)//'.f'//chtmp//'.'//grib_id//&
                        '.grib2',ierr)
 

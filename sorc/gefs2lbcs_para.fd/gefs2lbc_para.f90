@@ -6,7 +6,7 @@
 !   for GOCART output in NEMS-IO format 
 !
 !   Author: Youhua Tang
-!   Revisions: parallel for RRFS-SD
+!   Revisions: parallel for RRFS-CMAQ
 !-------------------------------------------------------------------------------------
 !
 !                             nhalo_model=3
@@ -53,8 +53,7 @@
      
       integer netindex(ngocart),checklayer,modate(maxfile),         &
        mosecs(maxfile),julian,ismotime(maxfile),iemotime(maxfile),  &
-       idate(7),tlmeta,iret,igindex(1)
-       
+       idate(7),tlmeta,iret
       logical ingocart,lflag,extrameta,indexfind(nspecies)
       integer monthday(12),dimids(3)
       data monthday/31,30,31,30,31,30,31,31,30,31,30,31/
@@ -70,7 +69,6 @@
       integer  begyear,begdate,begtime,dtstep,numts,tstepdiff      
       namelist /control/bndname,dtstep,tstepdiff,mofile,	&	  !  input file preffix and suffix
        lbcfile,topofile,inblend  ! inside blending layers
-
       
       CALL MPI_Init(ierr)
       CALL MPI_Comm_rank(MPI_COMM_WORLD, my_rank, ierr)
@@ -78,11 +76,10 @@
       
       call aq_blank(16*nspecies,bndname)
       call aq_blank(16*nspecies,checkname)
-
+      
+      inblend=0.
       sfact(1:ngocart,1:nspecies)=0.
       checkfact(1:ngocart,1:nspecies)=0.
-      inblend=0
-
 ! read converting information
 
       open(7,file='gefs2lbc-nemsio.ini')
@@ -152,15 +149,13 @@
       call check(nf90_inq_dimid(ncid,'lat',iddim_lat))
       call check(nf90_inquire_dimension(ncid,iddim_lat,len=nlat))
       call check(nf90_inq_dimid(ncid,'halo',iddim_halo))
-
-      call check(nf90_inquire_dimension(ncid,iddim_halo,len=nhalo))      
+      call check(nf90_inquire_dimension(ncid,iddim_halo,len=nhalo))
       
       nhalo_outside=nhalo-inblend ! outside halo layers
-
       jmax=jmax1-nhalo_outside*2
       if(nlon.ne.imax.or.nlat.ne.jmax) then
-        print*,'dimension mismatch ',nlon,imax,nlat,jmax,inblend
-	      stop 677
+        print*,'dimension mismatch ',nlon,imax,nlat,jmax
+	stop
       endif
       
 ! read zh
@@ -214,8 +209,7 @@
        call nemsio_open(gfile,trim(aline),'READ',iret=iret,gdatatype="bin4")
        if(iret.ne.0) then
          print*,'failed to open ',trim(aline)
-      	 stop 11
-
+	 stop
        endif	 
       call nemsio_getfilehead(gfile,iret=iret,nrec=nrec,dimx=im,	  &
          dimy=jm,dimz=lm,idate=idate,gdatatype=gdatatype,gtype=gtype,	  &
@@ -223,11 +217,14 @@
         nfsecondn=nfsecondn,nfsecondd=nfsecondd,nframe=nframe,  	  &
         ntrac=ntrac,nsoil=nsoil,extrameta=extrameta,nmeta=nmeta,	  &
         tlmeta=tlmeta)
-
-        if(iret.ne.0) then
-         print*,'failed to get file head ',trim(aline)
-	        stop 12
-        endif
+       
+!        jdate=julian(idate(1),idate(2),idate(3))
+	
+!	jfiledate=idate(1)*1000+jdate                      ! date in YYYYDDD
+!	jfiletime=idate(4)*10000+idate(5)*100+idate(6)     ! time in HHMMSS 
+!	call nextime(jfiledate,jfiletime,                    &
+!      	     nfhour*10000+nfminute*100+nfsecondn)
+!        jfiletime=jfiledate*100+jfiletime/10000            ! time in YYYYDDDHH
 	
 	print *,trim(aline),' iret=',iret,'nrec=',nrec,'im=',im,       &
         'jm=',jm,'lm=',lm,'idate=',idate,'gdatatype=',gdatatype,       &
@@ -236,7 +233,13 @@
         modelname,'extrameta=',extrameta,'nframe=',nframe,'nmeta=',    &
         nmeta,'nsoil=',nsoil,'extrameta=',extrameta,'ntrac=',	       &
         ntrac,'tlmeta=',tlmeta
-   igocart=im+2*nframe
+       
+!       if(maxval(zhx(:,:,:,:)).gt.1e12) then 
+!          print*,'3 zhx overflowed ', maxval(zhx(:,:,:,:))
+!	  stop
+!       endif	    
+        
+         igocart=im+2*nframe
 	 jgocart=jm+2*nframe
 	 kgocart=lm
 	 
@@ -257,12 +260,6 @@
            
 
        call nemsio_getfilehead(gfile,iret=iret,lat=work,lon=work2)
-       if(iret.ne.0) then
-         print*,'failed to get file head ',trim(aline)
-	      stop 13
-       endif
-        
-
        do i=1,igocart
         do j=1,jgocart
 	 glat(i,j)=work(i+(j-1)*igocart)
@@ -289,15 +286,6 @@
 !---calculating lateral boundary horizontal index in GOCART coordinate
 
 ! --- top and bottom
-
-       glonmax=maxval(glon(:,1),dim=1)
-       igindex=maxloc(glon(:,1),dim=1)
-       igindexmax=igindex(1)
-       
-       glonmin=minval(glon(:,1),dim=1)
-       igindex=minloc(glon(:,1),dim=1)
-       igindexmin=igindex(1)
-       
        do i=1,imax
         ix=i
 	do j=1,nhalo
@@ -308,30 +296,15 @@
 	   jy=jmax1-nhalo+j ! top
 	  endif    
          
-	  if (xlon(ix,jy).lt.glonmin ) then
-	    bndcoordx(i,j,m,1)=igindexmin
-	  else if (xlon(ix,jy).gt.glonmax) then
-	    bndcoordx(i,j,m,1)=igindexmax
-	  else   
-	   do i2=1,igocart-1
-            if(xlon(ix,jy).ge.glon(i2,1).and.xlon(ix,jy).le.glon(i2+1,1)) then
-	     bndcoordx(i,j,m,1)=i2+(xlon(ix,jy)-glon(i2,1))/     &   ! i in gocart coordiate
-      	     (glon(i2+1,1)-glon(i2,1))  
-	     exit
-	    endif
-	   enddo
-	  endif
-	  if(bndcoordx(i,j,m,1).lt.1) then
-	     print*,'bndcoordx-1 out of range',i,j,m,bndcoordx(i,j,m,1),ix,jy,xlon(ix,jy),i2,glon(i2,1)
-	     stop 997
-	  endif  
-	  if(i2.ge.igocart) then
-	     print*,'xlon is out of range ',xlon(ix,jy)
-	     print*,'glon=',glon(:,1)
-	     stop 999
-	  endif
+	  do i2=1,igocart
+           if(xlon(ix,jy).ge.glon(i2,1).and.xlon(ix,jy).le.glon(i2+1,1)) then
+	    bndcoordx(i,j,m,1)=i2+(xlon(ix,jy)-glon(i2,1))/     &   ! i in gocart coordiate
+      	    (glon(i2+1,1)-glon(i2,1))  
+	    exit
+	   endif
+	  enddo
 	 
-     do j2=1,jgocart-1
+          do j2=1,jgocart
 	   if( (glatint.gt.0.and.xlat(ix,jy).ge.glat(i2,j2).and.    &
             xlat(ix,jy).le.glat(i2,j2+1)).OR.(glatint.lt.0.and.    &
              xlat(ix,jy).le.glat(i2,j2).and.xlat(ix,jy)  	  &
@@ -341,12 +314,6 @@
 	    exit
 	   endif
 	  enddo
-
-	  if(bndcoordx(i,j,m,2).lt.1) then
-	     print*,'bndcoordx-2 out of range',i,j,m,bndcoordx(i,j,m,2),xlat(ix,jy),glatint,glat(i2,j2),glat(i2+1,j2+1)
-	     stop 998
-	  endif  
-
 	 
          enddo
         enddo
@@ -434,7 +401,6 @@
 	 print*,'error reading gocart temperature ',k
 	 stop
         endif	
-
 	call nemsio_readrecv(gfile,'spfh','mid layer',k,work3, &  ! specific humidity (kg/kg)
      	  iret=iret)
         if(iret.ne.0) then
@@ -445,9 +411,7 @@
 	do i=1,igocart
 	 do j=1,jgocart
 	  zgocart(i,j,k+1)=zgocart(i,j,k)+work1(i+(j-1)*igocart)  ! interface level
-
-          pgocart(i,j,k)=amax1(worka(i+(j-1)*igocart)-workc(i+(j-1)*igocart),0.1)  
-
+          pgocart(i,j,k)=worka(i+(j-1)*igocart) - workc(i+(j-1)*igocart)  
 	  tgocart(i,j,k)=work2(i+(j-1)*igocart)
 	  tv=work2(i+(j-1)*igocart)*(1+0.608*amax1(work3(i+(j-1)*igocart),1.e-15))  ! virtual temperature
 	  airgocart(i,j,k)=pgocart(i,j,k)/tv/287.04 ! air density in kg/m3  R= 287.04 m3 Pa /kg/K
@@ -459,23 +423,17 @@
 	do i=1,imax
 	 do j=1,nhalo
 	  do m=1,2		 
-
 	  
 	  x=bndcoordx(i,j,m,1)
 	  y=bndcoordx(i,j,m,2)
 	  xratio=x-int(x)
 	  yratio=y-int(y)
-          	   
-	  do kp=1,kgocart+1
-	   if(x.lt.igocart) then
-      	    tmpa(kp)=(1-yratio)*(zgocart(int(x),int(y),kp)*      &    ! horizontally interpolate height
-     	     (1-xratio)+zgocart(int(x)+1,int(y),kp)*xratio)+     &
-     	     yratio*(zgocart(int(x),int(y)+1,kp)*(1-xratio)+     &
-     	     zgocart(int(x)+1,int(y)+1,kp)*xratio)
-	   else
-	     tmpa(kp)=(1-yratio)*zgocart(int(x),int(y),kp)+yratio*zgocart(int(x),int(y)+1,kp)
-	   endif  
 
+	  do kp=1,kgocart+1
+      	   tmpa(kp)=(1-yratio)*(zgocart(int(x),int(y),kp)*      &    ! horizontally interpolate height
+     	    (1-xratio)+zgocart(int(x)+1,int(y),kp)*xratio)+     &
+     	    yratio*(zgocart(int(x),int(y)+1,kp)*(1-xratio)+     &
+     	    zgocart(int(x)+1,int(y)+1,kp)*xratio)
 	   if(kp.ge.2) tmpa(kp-1)=0.5*(tmpa(kp-1)+tmpa(kp)) ! convert to mid-layer 
           enddo
 
@@ -502,9 +460,7 @@
 ! ---find vertical index for left and right LBC 	
 	do i=1,nhalo
 	 do j=1,jmax
-
 	  do m=1,2		 
-
 	  
 	  x=bndcoordy(i,j,m,1)
 	  y=bndcoordy(i,j,m,2)
@@ -538,7 +494,8 @@
          enddo
        enddo
       enddo
-
+       
+       	
   ! begin species interpolation                
   do L1=1,ngocart
 
@@ -580,18 +537,13 @@
 	y=bndcoordx(i,j,m,2)
 	xratio=x-int(x)
 	yratio=y-int(y)
-        
-	if(x.lt.igocart) then
-	 tmpa(1:kgocart)=(1-yratio)*(vgocart(int(x),int(y),     & ! horizontally interpolate values
-     	  1:kgocart)*(1-xratio)+vgocart(int(x)+1,int(y),       &
-     	  1:kgocart)*xratio)+yratio*(vgocart(int(x),int(y)+1,  &
-     	  1:kgocart)*(1-xratio)+vgocart(int(x)+1,int(y)+1,     &
-     	  1:kgocart)*xratio)
-	else
-	 tmpa(1:kgocart)=(1-yratio)*vgocart(int(x),int(y),1:kgocart)+ &
-	  yratio*vgocart(int(x),int(y)+1,1:kgocart)
-	endif  
 
+	tmpa(1:kgocart)=(1-yratio)*(vgocart(int(x),int(y),     & ! horizontally interpolate values
+     	 1:kgocart)*(1-xratio)+vgocart(int(x)+1,int(y),       &
+     	 1:kgocart)*xratio)+yratio*(vgocart(int(x),int(y)+1,  &
+     	 1:kgocart)*(1-xratio)+vgocart(int(x)+1,int(y)+1,     &
+     	 1:kgocart)*xratio)
+	
 	 do k=1,kmax
 	  z=bndcoordx(i,j,m,k+2)
 	  zratio=z-int(z)
@@ -636,7 +588,7 @@
        	
 
 ! begin output
-     fillval=-9e33
+     fillval=0./0.
      print*,'start overwrite' 
       do L=1,noutbnd       ! check if gocart supplies all species, otherwise do not overwrite the existing aerosol
 
@@ -711,10 +663,8 @@
 	      tmpbndy(1:nhalo,1:jmax,k)=tmpbndy(1:nhalo,1:jmax,5) ! for bug in GEFS EC
 	     enddo
 	    endif 
-
-	  endif
-	  call check(nf90_put_var(ncid,idvar_tmp,tmpbndy))         
-
+	  endif    
+	    call check(nf90_put_var(ncid,idvar_tmp,tmpbndy))         
 	 enddo
 	enddo
       call check(nf90_close(ncid))
@@ -725,12 +675,11 @@ contains
     integer, intent ( in) :: status
 
     if(status /= nf90_noerr) then
-      print *, 'error in Netcdf file ',trim(nf90_strerror(status))
-      stop 788
+      print *, trim(nf90_strerror(status))
+      stop "Stopped"
     end if
     end subroutine check
-    end
-
+      end
 
 
       subroutine aq_blank(ntot,y)
