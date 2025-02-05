@@ -19,7 +19,7 @@
 #
 #---------------------------------------------------------------------------
 
-Prg      =  aqm_post_grib2_793
+Prg      =  aqm_post_grib2_1144
 
 # Library directories.
 
@@ -28,7 +28,9 @@ Lib    =   ../../lib/sorc/lib.f90
 
 
 # Command argument sequences.
-LIB_NETCDF = -I$(NETCDF)/include ${NETCDF_LDFLAGS}
+
+NETCDF_LDFLAGS = -L${NETCDF}/lib -lnetcdf -lnetcdff
+LIB_NETCDF = -I${NETCDF}/include $(NETCDF_LDFLAGS)
 
 F90_CMD   = ftn 
 
@@ -58,7 +60,8 @@ Lib2 =		$(Lib)/date_utils.f90		$(Lib)/get_free_unit.f90 \
 
 Lib3 =         $(Lib)/next_time.f90
 
-NETCDF_LIB  =  ${NETCDF_LDFLAGS}  ${NETCDF_LDFLAGS_F}
+#NETCDF_LIB  =  ${NETCDF_LDFLAGS}  ${NETCDF_LDFLAGS_F}
+NETCDF_LIB  =  $(NETCDF_LDFLAGS) 
 W3_LIB      = ${W3NCO_LIB4} ${W3EMC_LIB4}
 
 Lib4   =  \

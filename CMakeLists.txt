@@ -1,13 +1,6 @@
 # check environment
 cmake_minimum_required(VERSION 3.15)
 
-# set compiler
-if (NOT DEFINED ENV{CMAKE_Fortran_COMPILER})
-  message(FATAL_ERROR "CMAKE_Fortran_COMPILER is not defined")
-endif()
-
-set(CMAKE_Fortran_COMPILER $ENV{CMAKE_Fortran_COMPILER})
-
 if(NOT DEFINED CMAKE_INSTALL_BINDIR)
   set(CMAKE_INSTALL_BINDIR exec)
 endif()
@@ -44,6 +37,10 @@ if(BUILD_POST_STAT)
   find_package(ZLIB REQUIRED)
   find_package(bufr REQUIRED)
   find_package(Jasper REQUIRED)
+endif()
+
+if(CMAKE_Fortran_COMPILER_ID MATCHES "^(Intel)$")
+  set(CMAKE_Fortran_FLAGS_DEBUG "-O0 -check all -ftrapuv")
 endif()
 
 # add project's subdirectories

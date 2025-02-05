@@ -21,7 +21,8 @@ list(APPEND SRC_FLIB2
     ${FLIB}/expand_filename.f90
     ${FLIB}/find_runs.f90
     ${FLIB}/get_free_unit.f90
-    ${FLIB}/get_param_module.f90     
+    ${FLIB}/get_param_module.f90
+    ${FLIB}/infill.f90
     ${FLIB}/message_nolog.f90
     ${FLIB}/multisets.f90
     ${FLIB}/netcdf_sup.f90
@@ -157,7 +158,7 @@ if(CMAKE_Fortran_COMPILER_ID MATCHES "^(Intel)$")
   set(CMAKE_Fortran_FLAGS
       "-g -traceback -fp-model source -free -convert big_endian -qopenmp")
   set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
-  set(CMAKE_Fortran_FLAGS_DEBUG "-O0")
+  set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -O0")
 elseif(CMAKE_Fortran_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
   set(CMAKE_Fortran_FLAGS
       "-g -fbacktrace -ffree-form -ffree-line-length-none -fconvert=big-endian -fopenmp")

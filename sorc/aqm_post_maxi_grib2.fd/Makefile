@@ -5,6 +5,7 @@
 # 2014-jul-16	Clean version for new release.
 # 2016-jan-12	Upgrade to Dave's current fortran library structure.
 # 2016-feb-10	Update for get_param_module.
+# 2024-aug-06	Update for get_param_module.
 #
 # This make file uses a single large compile command, rather
 # than incremental compiles.  Environment variables are used to
@@ -18,7 +19,7 @@
 #
 #---------------------------------------------------------------------------
 
-Prg     =  aqm_post_maxi_grib2_793
+Prg     =  aqm_post_maxi_grib2_1144
 
 # Library directories.
 

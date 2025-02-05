@@ -41,6 +41,7 @@
 ! 2023-apr-08	Add lower limit for AirNow negative input values.
 !		Add low/high input limits for ozone as well as PM2.5.
 ! 2023-apr-11	Minor improvements to diagnostics.
+! 2023-oct-27	Infill one or two missing values by linear interpolation.
 !
 ! * Remember to update the date in the module_id below.
 !
@@ -131,13 +132,14 @@ subroutine read_obs_qc (infile_template, varname, start_date, end_date, &
    use config, only : dp
    use convert__obs_units
    use grid_location
+   use infill_mod
    use qc__single_site
    use read__obs_series
    use site__blocking
    use string_utils
    implicit none
 
-   character(*), parameter :: module_id = 'read_obs_qc.f90 version 2023-apr-11'
+   character(*), parameter :: module_id = 'read_obs_qc.f90 version 2023-oct-27'
 
 ! Input arguments.
 
@@ -169,17 +171,20 @@ subroutine read_obs_qc (infile_template, varname, start_date, end_date, &
    character fdate_str*24
 
    integer si, si2, nsites_in, ntimes
-   integer nvalid, nmiss
+   integer nvalid, nmiss, ndiff, nfill, nbefore, max_length
    integer nx, ny, noff_grid
    integer nsites_valid, nodata1, nodata2, nsites_nodata
    integer percent_valid_int
 
-   real(dp) vmiss_in, vmin, vmax, percent_miss
+   real(dp) vmiss_in, vmin, vmax
+   real(dp) percent_before, percent_miss, percent_diff
 
    logical off_grid
 
-   integer, allocatable :: i_corners(:), j_corners(:)	! grid indices
-   logical, allocatable :: valid(:)			! track valid sites
+   integer, allocatable :: i_corners(:), j_corners(:)	    ! grid indices
+   integer, allocatable :: nmiss_before(:), nmiss_after(:)  ! diagnostics
+
+   logical, allocatable :: valid(:)			    ! track valid sites
 
 ! Dynamic arrays for site input data.
 
@@ -518,6 +523,57 @@ subroutine read_obs_qc (infile_template, varname, start_date, end_date, &
 
    if (diag>=2) print '(a,i0)', '   Total number of sites eliminated = ', &
       (nsites_in - nsites_valid)
+
+!-----------------------------------------------------------
+! Infill short gaps by linear interpolation.
+!-----------------------------------------------------------
+
+! This is a fix for bullseye problems due to persistent missing values
+! in the same hour every day.  This may also help similar issues with
+! intermittent gaps in the obs data.
+
+   if (diag>=2) print *
+   print *, 'read_obs_qc:  Infill short gaps by linear interpolation.'
+
+   max_length = 2			! infill only 1 or 2 missing values
+
+   if (diag>=2) print '(a,i0)','   Maximum gap length to infill =           ', &
+      max_length
+
+   if (diag>=2) then			! count at each site for diagnostics
+      nbefore      = count (out_data == vmiss)		   ! all sites together
+      nmiss_before = count ( (out_data == vmiss), dim=1 )  ! count at each site
+   end if
+
+   call infill (out_data, vmiss, max_length, diag, site_ids)
+   					! data dims must be (time, sites)
+
+! Infill diagnostics.
+
+   if (diag >= 2) then
+      nmiss          = count (out_data == vmiss)
+      percent_before = (nbefore * 100.0_dp) / size (out_data)
+      percent_miss   = (nmiss   * 100.0_dp) / size (out_data)
+      print '(a,i0,a,f0.1,a)', '   Number of missing values before infill = ', &
+         nbefore, ' (', percent_before, '%)'
+      print '(a,i0,a,f0.1,a)', '   Number of missing values after  infill = ', &
+         nmiss, ' (', percent_miss, '%)'
+
+      nmiss_after  = count ( (out_data == vmiss), dim=1 )  ! count at each site
+      ndiff        = count (nmiss_before(:) /= nmiss_after(:))
+      percent_diff = (ndiff * 100.0_dp) / nsites_valid
+      print '(a,i0,a,f0.1,a)', '   Number of sites with infill            = ', &
+         ndiff, ' (', percent_diff, '%)'
+   end if
+
+   if (diag >= 3) then
+      print *
+      do si = 1, nsites_valid
+         nfill = nmiss_before(si) - nmiss_after(si)
+         if (nfill > 0) print '(3x,2a,i5)', site_ids(si), &
+            '  number of values infilled =', nfill
+      end do
+   end if
 
 !-----------------------------------------------------------
 ! Show final QC statistics.

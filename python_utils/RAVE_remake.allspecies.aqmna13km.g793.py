@@ -47,15 +47,15 @@ def RAVE_remake_allspecies(date, cyc, input_fire, output_fire):
              Store_by_Level(fout,'MeanFRP','Mean Fire Radiative Power','MW','3D','0.f','1.f')
              tgt_rate = ds_togid[svar].fillna(0)
              fout.variables['MeanFRP'][:,:,:] = tgt_rate
-         if svar=='PM25_scaled':
+         elif svar=='PM25_scaled':
              Store_by_Level(fout,'PM2.5','PM2.5 Biomass Emissions','kg m-2 s-1','3D','0.f','1.f')
              tgt_rate = ds_togid[svar].fillna(0)/area/3600
              fout.variables['PM2.5'][:,:,:] = tgt_rate
-         if svar=='BC_scaled':
+         elif svar=='BC_scaled':
              Store_by_Level(fout,'BC','BC Biomass Emissions','kg m-2 s-1','3D','0.f','1.f')
              tgt_rate = ds_togid[svar].fillna(0)/area/3600
              fout.variables['BC'][:,:,:] = tgt_rate
-         if svar=='OC_scaled':
+         elif svar=='OC_scaled':
              Store_by_Level(fout,'OC','OC Biomass Emissions','kg m-2 s-1','3D','0.f','1.f')
              tgt_rate = ds_togid[svar].fillna(0)/area/3600
              fout.variables['OC'][:,:,:] = tgt_rate
