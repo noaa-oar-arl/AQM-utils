@@ -20,7 +20,7 @@ logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger("stack-pt-merge")
 log.setLevel(logging.WARNING)
 
-REF_YEAR = 2016
+REF_YEAR_DEFAULT = 2016
 
 POINT_DIM_NAME = "nlocs"
 
@@ -205,7 +205,7 @@ class Date:
 class SectorFiles:
     """Mapping of Date to Paths for a given sector directory."""
 
-    _ref_year = REF_YEAR
+    _ref_year = REF_YEAR_DEFAULT
     """Year in the emissions data."""
 
     def __init__(self, directory, sector):
@@ -392,10 +392,11 @@ def main(
     date_str,
     *,
     nstep=NSTEP_DEFAULT,
+    ref_year=REF_YEAR_DEFAULT,
+    input_dir=INPUT_DIR_DEFAULT,
+    stack_groups_only=False,
     logger_info=False,
     logger_debug=False,
-    stack_groups_only=False,
-    input_dir=INPUT_DIR_DEFAULT,
 ):
     # Adjust logger settings
     if logger_info:
@@ -408,12 +409,13 @@ def main(
     ndays = date_final.dt.toordinal() - date_start.dt.toordinal() + 1
     pre = "pt" if not stack_groups_only else "sg"
     ofn = f"{pre}-{str(date_start).replace('-', '').replace('_', '')}.nc"
+    SectorFiles._ref_year = ref_year
 
     print_heading("Info")
     print(f"Start time: {date_start}")
     print(f"Number of hourly time steps desired: {nstep} -> {ndays} unique day(s)")
     print(f"Final time: {date_final}")
-    print(f"Using {REF_YEAR} point emissions data")
+    print(f"Using {ref_year} point emissions data")
     print(f"Output filename: {ofn}")
     print(f"Input directory: {input_dir.resolve(strict=True).as_posix()}")
 
@@ -656,6 +658,13 @@ def parse_args(args=None):
         ),
     )
     parser.add_argument(
+        "-r",
+        "--reference-year",
+        type=int,
+        default=REF_YEAR_DEFAULT,
+        help=f"Emissions data year, e.g. 2016 or 2019. (default: {REF_YEAR_DEFAULT})",
+    )
+    parser.add_argument(
         "--stack-groups-only",
         help="'stack_groups' data only.",
         action="store_true",
@@ -677,6 +686,7 @@ def parse_args(args=None):
     kwargs = {
         "date_str": args.start,
         "nstep": args.nstep,
+        "ref_year": args.reference_year,
         "input_dir": args.input_dir,
         "stack_groups_only": args.stack_groups_only,
         "logger_info": args.info,
