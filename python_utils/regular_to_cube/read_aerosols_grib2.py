@@ -66,6 +66,7 @@ def read_aerosol_species_from_grib2(grib_file_path: str,
         
         # Get grid information from the first message
         first_msg = grb[0]
+        lats, lons = first_msg.grid()
         
         # Debug: print available attributes
         logger.info("Examining first message attributes...")
@@ -89,7 +90,9 @@ def read_aerosol_species_from_grib2(grib_file_path: str,
                 'lon_min': first_msg.lo1 / 1e6,  # longitude of first grid point
                 'lon_max': first_msg.lo2 / 1e6,  # longitude of last grid point
                 'dlat': first_msg.dy / 1e6,      # j direction increment
-                'dlon': first_msg.dx / 1e6       # i direction increment
+                'dlon': first_msg.dx / 1e6,      # i direction increment
+                'lats': lats,                    # latitude values
+                'lons': lons                     # longitude values
             }
         except AttributeError as e:
             logger.warning(f"Grid attribute error: {e}")
