@@ -158,9 +158,30 @@ def add_3d_fields_to_fv3_tile(tile_file_path: str,
     
     # Write the modified dataset
     logger.info(f"Writing modified dataset to: {output_path}")
-    ds_out.to_netcdf(output_path)
+    
+    # Debug: Log what variables are in the output dataset
+    logger.info(f"Original dataset variables: {list(ds.data_vars.keys())}")
+    logger.info(f"Output dataset variables: {list(ds_out.data_vars.keys())}")
+    logger.info(f"Added fields: {list(field_data.keys())}")
+    
+    # Ensure all original variables are preserved
+    for var_name in ds.data_vars:
+        if var_name not in ds_out.data_vars:
+            logger.warning(f"Variable {var_name} was lost during processing, restoring it")
+            ds_out[var_name] = ds[var_name]
+    
+    # Write with proper encoding to preserve data integrity
+    encoding = {}
+    for var in ds_out.data_vars:
+        if ds_out[var].dtype.kind in ['i', 'u']:  # Integer types
+            encoding[var] = {'dtype': 'int32', '_FillValue': None}
+        elif ds_out[var].dtype.kind == 'f':  # Float types
+            encoding[var] = {'dtype': 'float32', '_FillValue': None}
+    
+    ds_out.to_netcdf(output_path, encoding=encoding)
     
     logger.info(f"Successfully added {len(field_data)} fields to {output_path}")
+    logger.info(f"Final dataset contains {len(ds_out.data_vars)} variables")
     
     return output_path
 
