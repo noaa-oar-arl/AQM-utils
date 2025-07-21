@@ -13,7 +13,8 @@ import numpy as np
 from pathlib import Path
 from read_aerosols_grib2 import read_aerosol_species_from_grib2
 from fv3_cold_starts import (read_vcoord_from_ctrl_file, get_pressure_levels_from_vcoord,
-                             read_cubed_sphere_coordinates)
+                             read_cubed_sphere_coordinates, add_3d_fields_to_fv3_tile,
+                             create_aerosol_field_metadata)
 from interp_fields import interpolate_aerosols_to_cubed_sphere
 
 def generate_gcafs_ics(grib_file, fv3_prefix, output_dir=None):
@@ -74,7 +75,6 @@ def generate_gcafs_ics(grib_file, fv3_prefix, output_dir=None):
     print(f"Successfully extracted aerosol species data: {[k for k in aerosol_data.keys() if not k.startswith('_')]}")
     
     grid_info_grib = aerosol_data['_grid_info']
-    print(grid_info_grib)
     levels_grib = aerosol_data['_levels']
     
     # Extract source grid coordinates from GRIB data
@@ -200,8 +200,63 @@ def generate_gcafs_ics(grib_file, fv3_prefix, output_dir=None):
             mean_val = np.mean(interpolated_aerosols[species][interpolated_aerosols[species] > 0]) if np.any(interpolated_aerosols[species] > 0) else 0.0
             print(f"  {species}: shape {data_shape}, max {max_val:.2e}, mean {mean_val:.2e}")
         
-        # TODO: Write interpolated data to FV3 tile files
-        print("TODO: Write interpolated aerosol data to FV3 tile files")
+        # Write interpolated data to FV3 tile files
+        print("Writing interpolated aerosol fields to FV3 tile files...")
+        
+        # Create metadata for aerosol fields
+        metadata = create_aerosol_field_metadata()
+        
+        # Get list of species
+        species_list = [k for k in interpolated_aerosols.keys() if not k.startswith('_')]
+        
+        # Write to each tile file individually since each tile has different data
+        output_files = []
+        for tile in range(1, 7):
+            tile_file = f"{fv3_prefix}tile{tile}.nc"
+            
+            # Extract data for this specific tile from cubed-sphere array
+            tile_specific_data = {}
+            for species in species_list:
+                cubed_data = interpolated_aerosols[species]  # Shape: (6, nlev, ny, nx)
+                tile_specific_data[species] = cubed_data[tile-1, :, :, :]  # Shape: (nlev, ny, nx)
+            
+            try:
+                print(f"  Writing aerosol fields to tile {tile}: {os.path.basename(tile_file)}")
+                
+                # Write to this tile
+                output_file = add_3d_fields_to_fv3_tile(
+                    tile_file,
+                    tile_specific_data,
+                    metadata,
+                    backup_original=True,
+                    output_path=os.path.join(output_dir, os.path.basename(tile_file)) if output_dir != os.getcwd() else None,
+                )
+                
+                output_files.append(output_file)
+                print(f"    Successfully wrote {len(species_list)} species to: {os.path.basename(output_file)}")
+                
+                # Print some statistics for this tile
+                for species in species_list[:3]:  # Just show first 3 species to avoid clutter
+                    data = tile_specific_data[species]
+                    max_val = np.max(data)
+                    nonzero_frac = np.sum(data > 0) / data.size * 100
+                    print(f"      {species}: max {max_val:.2e}, {nonzero_frac:.1f}% non-zero")
+                
+            except Exception as e:
+                print(f"    ERROR: Failed to write aerosol fields to tile {tile}: {e}")
+                import traceback
+                traceback.print_exc()
+                return False
+        
+        print(f"Aerosol fields successfully written to {len(output_files)} FV3 tile files.")
+        print(f"Output files created in: {output_dir if output_dir != os.getcwd() else 'current directory'}")
+        
+        # Print summary of what was written
+        print(f"Summary:")
+        print(f"  - {len(species_list)} aerosol species written to each tile")
+        print(f"  - {len(pressure_fv3)} vertical levels per species")
+        print(f"  - Grid dimensions: {target_geolon.shape[1]} x {target_geolon.shape[2]} per tile")
+        print(f"  - Original tile files backed up with .orig extension")
         
     except Exception as e:
         print(f"ERROR: Interpolation failed: {e}")

@@ -426,7 +426,7 @@ def add_3d_fields_to_fv3_tile(tile_file_path: str,
     
     # Determine output path
     if output_path is None:
-        output_path = tile_file_path
+        output_path = f"{tile_file_path}.out.nc"
         # Create backup if requested
         if backup_original:
             backup_path = f"{tile_file_path}.backup"
@@ -441,76 +441,6 @@ def add_3d_fields_to_fv3_tile(tile_file_path: str,
     logger.info(f"Successfully added {len(field_data)} fields to {output_path}")
     
     return output_path
-
-
-def add_aerosol_fields_to_all_tiles(tile_directory: str,
-                                   aerosol_data: Dict[str, np.ndarray],
-                                   field_metadata: Optional[Dict[str, Dict]] = None,
-                                   tile_pattern: str = "gfs_data.tile*.nc",
-                                   output_directory: Optional[str] = None,
-                                   backup_original: bool = True) -> List[str]:
-    """
-    Add aerosol fields to all FV3 tile files in a directory.
-    
-    Args:
-        tile_directory (str): Directory containing FV3 tile files
-        aerosol_data (Dict[str, np.ndarray]): Dictionary of aerosol field names and their 3D data
-        field_metadata (Dict[str, Dict], optional): Metadata for each field
-        tile_pattern (str): Glob pattern to match tile files
-        output_directory (str, optional): Directory for output files. If None, overwrites originals
-        backup_original (bool): Whether to create backups of original files
-    
-    Returns:
-        List[str]: List of paths to modified tile files
-    
-    Raises:
-        FileNotFoundError: If tile directory doesn't exist
-        ValueError: If no tile files found matching pattern
-    """
-    
-    tile_dir = Path(tile_directory)
-    if not tile_dir.exists():
-        raise FileNotFoundError(f"Tile directory not found: {tile_directory}")
-    
-    # Find all tile files matching the pattern
-    tile_files = list(tile_dir.glob(tile_pattern))
-    if not tile_files:
-        raise ValueError(f"No tile files found matching pattern '{tile_pattern}' in {tile_directory}")
-    
-    logger.info(f"Found {len(tile_files)} tile files to process")
-    
-    output_files = []
-    
-    for tile_file in sorted(tile_files):
-        logger.info(f"Processing tile file: {tile_file.name}")
-        
-        # Determine output path
-        if output_directory:
-            output_dir = Path(output_directory)
-            output_dir.mkdir(parents=True, exist_ok=True)
-            output_path = output_dir / tile_file.name
-        else:
-            output_path = None
-        
-        # Add fields to this tile
-        try:
-            output_file = add_3d_fields_to_fv3_tile(
-                str(tile_file),
-                aerosol_data,
-                field_metadata,
-                str(output_path) if output_path else None,
-                backup_original
-            )
-            output_files.append(output_file)
-            logger.info(f"Successfully processed {tile_file.name}")
-            
-        except Exception as e:
-            logger.error(f"Failed to process {tile_file.name}: {e}")
-            continue
-    
-    logger.info(f"Successfully processed {len(output_files)} out of {len(tile_files)} tile files")
-    
-    return output_files
 
 
 def create_aerosol_field_metadata() -> Dict[str, Dict]:
@@ -631,68 +561,3 @@ def create_aerosol_field_metadata() -> Dict[str, Dict]:
     }
     
     return metadata
-
-
-def example_usage():
-    """
-    Example of how to use the FV3 tile modification functions.
-    """
-    
-    # Example paths
-    tile_file = "/gpfs/f6/ira-sti/proj-shared/Cory.R.Martin/july2025/gcafs/gdas.init/output/gdas.20250701/00/model/atmos/input/gfs_data.tile1.nc"
-    tile_directory = "/gpfs/f6/ira-sti/proj-shared/Cory.R.Martin/july2025/gcafs/gdas.init/output/gdas.20250701/00/model/atmos/input/"
-    
-    # Example aerosol data (replace with actual data from grib2_to_cube.py)
-    # This would come from the GRIB2 reader output
-    aerosol_data = {
-        'dust1': np.random.random((64, 192, 192)) * 1e-6,  # Example shape and values
-        'dust2': np.random.random((64, 192, 192)) * 1e-6,
-        'dust3': np.random.random((64, 192, 192)) * 1e-6,
-        'dust4': np.random.random((64, 192, 192)) * 1e-6,
-        'dust5': np.random.random((64, 192, 192)) * 1e-6,
-        'seas1': np.random.random((64, 192, 192)) * 1e-6,
-        'seas2': np.random.random((64, 192, 192)) * 1e-6,
-        'seas3': np.random.random((64, 192, 192)) * 1e-6,
-        'seas4': np.random.random((64, 192, 192)) * 1e-6,
-        'seas5': np.random.random((64, 192, 192)) * 1e-6,
-        'so4': np.random.random((64, 192, 192)) * 1e-7,
-        'so2': np.random.random((64, 192, 192)) * 1e-8,
-        'bc1': np.random.random((64, 192, 192)) * 1e-7,
-        'bc2': np.random.random((64, 192, 192)) * 1e-7,
-        'oc1': np.random.random((64, 192, 192)) * 1e-7,
-        'oc2': np.random.random((64, 192, 192)) * 1e-7,
-        # ... etc for other species
-    }
-    
-    # Get metadata for aerosol fields
-    metadata = create_aerosol_field_metadata()
-    
-    try:
-        # Example 1: Add fields to a single tile file
-        logger.info("Adding aerosol fields to single tile file...")
-        output_file = add_3d_fields_to_fv3_tile(
-            tile_file,
-            aerosol_data,
-            metadata,
-            backup_original=True
-        )
-        logger.info(f"Single tile processed: {output_file}")
-        
-        # Example 2: Add fields to all tile files in a directory
-        logger.info("Adding aerosol fields to all tile files...")
-        output_files = add_aerosol_fields_to_all_tiles(
-            tile_directory,
-            aerosol_data,
-            metadata,
-            backup_original=True
-        )
-        logger.info(f"Processed {len(output_files)} tile files")
-        
-    except Exception as e:
-        logger.error(f"Example failed: {e}")
-        import traceback
-        traceback.print_exc()
-
-
-if __name__ == "__main__":
-    example_usage()
