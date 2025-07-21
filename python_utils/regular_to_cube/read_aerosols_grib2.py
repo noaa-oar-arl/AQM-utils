@@ -105,7 +105,9 @@ def read_aerosol_species_from_grib2(grib_file_path: str,
                 'lon_min': 0.0,
                 'lon_max': 360.0,
                 'dlat': 0.5,
-                'dlon': 0.5
+                'dlon': 0.5,
+                'lats': lats,
+                'lons': lons
             }
             logger.warning("Using fallback grid information")
         
@@ -157,8 +159,8 @@ def read_aerosol_species_from_grib2(grib_file_path: str,
         
         # Initialize data arrays for each aerosol species
         for species_name in aerosol_species_info.keys():
-            # Shape: (time, level, lat, lon) - assuming single time for now
-            aerosol_data[species_name] = np.zeros((1, len(levels_to_read), grid_info['nj'], grid_info['ni']))
+            # Shape: (level, lat, lon) - assuming single time for now
+            aerosol_data[species_name] = np.zeros((len(levels_to_read), grid_info['nj'], grid_info['ni']))
         
         # Read data for each aerosol species and level
         species_found = {species: False for species in aerosol_species_info.keys()}
@@ -225,7 +227,7 @@ def read_aerosol_species_from_grib2(grib_file_path: str,
                             
                             # Store in the aerosol_data array
                             if not species_found[species_name]:
-                                aerosol_data[species_name][0, level_idx, :, :] = data_2d
+                                aerosol_data[species_name][level_idx, :, :] = data_2d
                                 species_found[species_name] = True
                                 logger.info(f"Read {species_name} ({param_name}) for level {level}: min={np.min(data_2d):.2e}, max={np.max(data_2d):.2e}")
                                 break
