@@ -224,10 +224,10 @@ def read_aerosol_species_from_grib2(grib_file_path: str,
                                 data_2d = data_values.reshape(grid_info['nj'], grid_info['ni'])
                             else:
                                 data_2d = data_values
-                            
+                       
                             # Store in the aerosol_data array
+                            aerosol_data[species_name][level_idx, :, :] = data_2d
                             if not species_found[species_name]:
-                                aerosol_data[species_name][level_idx, :, :] = data_2d
                                 species_found[species_name] = True
                                 logger.info(f"Read {species_name} ({param_name}) for level {level}: min={np.min(data_2d):.2e}, max={np.max(data_2d):.2e}")
                                 break

@@ -186,8 +186,8 @@ def generate_gcafs_ics(grib_file, fv3_prefix, output_dir=None):
             source_lon, source_lat,
             pressure_grib, pressure_fv3,
             target_geolon, target_geolat,
-            vertical_method='constant',    # Use constant extrapolation for aerosols
-            horizontal_method='linear'     # Linear horizontal interpolation
+            vertical_method='linear',
+            horizontal_method='linear'
         )
         
         print(f"Complete interpolation finished successfully!")
@@ -209,6 +209,25 @@ def generate_gcafs_ics(grib_file, fv3_prefix, output_dir=None):
         # Get list of species
         species_list = [k for k in interpolated_aerosols.keys() if not k.startswith('_')]
         
+        # Map species names to FV3 field names
+        species_map = {
+            'dust_bin1': 'dust1',
+            'dust_bin2': 'dust2',
+            'dust_bin3': 'dust3',
+            'dust_bin4': 'dust4',
+            'dust_bin5': 'dust5',
+            'seasalt_bin1': 'seas1',
+            'seasalt_bin2': 'seas2',
+            'seasalt_bin3': 'seas3',
+            'seasalt_bin4': 'seas4',
+            'seasalt_bin5': 'seas5',
+            'sulfate': 'so4',
+            'organic_carbon_hydrophobic': 'oc1',
+            'organic_carbon_hydrophilic': 'oc2',
+            'black_carbon_hydrophobic': 'bc1',
+            'black_carbon_hydrophilic': 'bc2',
+        }
+
         # Write to each tile file individually since each tile has different data
         output_files = []
         for tile in range(1, 7):
@@ -218,7 +237,8 @@ def generate_gcafs_ics(grib_file, fv3_prefix, output_dir=None):
             tile_specific_data = {}
             for species in species_list:
                 cubed_data = interpolated_aerosols[species]  # Shape: (6, nlev, ny, nx)
-                tile_specific_data[species] = cubed_data[tile-1, :, :, :]  # Shape: (nlev, ny, nx)
+                output_species = species_map[species] if species in species_map else species
+                tile_specific_data[output_species] = cubed_data[tile-1, :, :, :]  # Shape: (nlev, ny, nx)
             
             try:
                 print(f"  Writing aerosol fields to tile {tile}: {os.path.basename(tile_file)}")
@@ -234,13 +254,6 @@ def generate_gcafs_ics(grib_file, fv3_prefix, output_dir=None):
                 
                 output_files.append(output_file)
                 print(f"    Successfully wrote {len(species_list)} species to: {os.path.basename(output_file)}")
-                
-                # Print some statistics for this tile
-                for species in species_list[:3]:  # Just show first 3 species to avoid clutter
-                    data = tile_specific_data[species]
-                    max_val = np.max(data)
-                    nonzero_frac = np.sum(data > 0) / data.size * 100
-                    print(f"      {species}: max {max_val:.2e}, {nonzero_frac:.1f}% non-zero")
                 
             except Exception as e:
                 print(f"    ERROR: Failed to write aerosol fields to tile {tile}: {e}")

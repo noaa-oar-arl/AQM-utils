@@ -103,7 +103,7 @@ def interpolate_aerosols_vertically(aerosol_data, pressure_source, pressure_targ
         # Initialize output array (in sorted target pressure order)
         nlev_target = len(pressure_target)
         interpolated_species_sorted = np.zeros((nlev_target, nlat, nlon))
-        
+
         # Interpolate for each horizontal grid point
         for i in range(nlat):
             for j in range(nlon):
@@ -155,7 +155,7 @@ def interpolate_aerosols_vertically(aerosol_data, pressure_source, pressure_targ
         interp_mean = np.mean(interpolated_species[interpolated_species > 0]) if np.any(interpolated_species > 0) else 0.0
         
         print(f"    {species}: max {orig_max:.2e} -> {interp_max:.2e}, mean {orig_mean:.2e} -> {interp_mean:.2e}")
-        
+
         # Check for extrapolation
         log_p_min = log_pressure_source_sorted.min()
         log_p_max = log_pressure_source_sorted.max()
