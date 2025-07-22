@@ -325,9 +325,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # Example usage (uncomment to test)
-    # grib_file = "/scratch3/NCEPDEV/da/Cory.R.Martin/sample_files_for_ics/gefs.chem.t00z.a3d_0p50.f000.grib2"
-    # fv3_prefix = "/scratch3/NCEPDEV/da/Cory.R.Martin/20241214.030000.sfc_data.tile"
-    # generate_gcafs_ics(grib_file, fv3_prefix)
     
     main()
