@@ -437,9 +437,14 @@ def add_3d_fields_to_fv3_tile(tile_file_path: str,
     # Write the modified dataset
     logger.info(f"Writing modified dataset to: {output_path}")
     ds_out.to_netcdf(output_path)
-    
+
     logger.info(f"Successfully added {len(field_data)} fields to {output_path}")
-    
+        
+    # Move the temporary file to the final output path
+    if output_path != tile_file_path:
+        shutil.move(output_path, tile_file_path)
+        logger.info(f"Moved temporary output file to: {tile_file_path}")
+
     return output_path
 
 

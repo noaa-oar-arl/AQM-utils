@@ -385,7 +385,8 @@ def interpolate_aerosols_to_cubed_sphere(aerosol_data, source_lon, source_lat,
     fully_interpolated = interpolate_aerosols_horizontally(
         vertically_interpolated, source_lon, source_lat,
         target_geolon, target_geolat, 
-        method=horizontal_method
+        method=horizontal_method,
+        fill_value=None,  # Use default fill value from RegularGridInterpolator
     )
     
     print(f"Complete interpolation pipeline finished successfully!")
