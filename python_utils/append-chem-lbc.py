@@ -20,9 +20,7 @@ def append_chem_lbc(chem_fp, files, *, rm=False):
     if rm:
         # Create new files without the chem variables for testing the append on
         met_names = [vn for vn in met0.variables if vn not in chem.variables]
-        dims_needed = set(
-            itertools.chain.from_iterable(met0[vn].dimensions for vn in met_names)
-        )
+        dims_needed = set(itertools.chain.from_iterable(met0[vn].dimensions for vn in met_names))
         for met_fp, met in mets.items():
             p = Path(met_fp)
             p_new = p.with_stem(f"{p.stem}_clean")
@@ -32,9 +30,7 @@ def append_chem_lbc(chem_fp, files, *, rm=False):
             # dims
             for name, dimension in met.dimensions.items():
                 if name in dims_needed:
-                    ds.createDimension(
-                        name, len(dimension) if not dimension.isunlimited() else None
-                    )
+                    ds.createDimension(name, len(dimension) if not dimension.isunlimited() else None)
 
             # variables
             for name in met_names:
@@ -56,9 +52,7 @@ def append_chem_lbc(chem_fp, files, *, rm=False):
                 if name not in met.variables:
                     # add
                     met.createVariable(name, variable.dtype, variable.dimensions)
-                    met[name].setncatts(
-                        {key: getattr(variable, key) for key in variable.ncattrs()}
-                    )
+                    met[name].setncatts({key: getattr(variable, key) for key in variable.ncattrs()})
                     met[name][:] = chem[name][:]
                     print(f"-> {met_fp}")
 
@@ -92,10 +86,7 @@ def parse_args(argv=None):
     parser.add_argument(
         "--rm",
         action="store_true",
-        help=(
-            "Create new files with chem vars removed instead (for testing). "
-            "They will have stem suffix `_clean`."
-        ),
+        help=("Create new files with chem vars removed instead (for testing). " "They will have stem suffix `_clean`."),
         default=False,
     )
 
