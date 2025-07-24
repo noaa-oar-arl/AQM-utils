@@ -1,0 +1,114 @@
+name: Weekly Modulefile Sync
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'  # Every Monday at 3:00 AM UTC
+  workflow_dispatch:
+
+jobs:
+  update-and-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout current repo
+      uses: actions/checkout@v4
+
+    - name: Set up Git user
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+
+    - name: Clone ufs-weather-model and copy/rename modulefiles
+      run: |
+        git clone https://github.com/ufs-community/ufs-weather-model.git
+        mkdir -p modulefiles
+        for f in ufs-weather-model/modulefiles/*.lua; do
+          base=$(basename "$f")
+          newname=$(echo "$base" | sed 's/^ufs_/aqm-utils_/')
+          cp "$f" "modulefiles/$newname"
+        done
+        # Insert additional loads only into aqm-utils_common.lua
+        f="modulefiles/aqm-utils_common.lua"
+        if [ -f "$f" ]; then
+          # Add bufr/12.1.0 if not present
+          grep -q 'load("bufr/12.1.0")' "$f" || sed -i '/load("bufr\/11.7.1")/a load("bufr/12.1.0")' "$f"
+          # add wgrib2/3.6.0 if not present
+          grep -q 'load("wgrib2/3.6.0")' "$f" || sed -i '/load("wgrib2\/3.6.0")/!b;:a;n;/^/!ba;i load("wgrib2/3.6.0")' "$f"
+          # add zlib/1.2.13 if not present
+          grep -q 'load("zlib/1.2.13")' "$f" || sed -i '/load("zlib\/1.2.11")/a load("zlib/1.2.13")' "$f"
+          # Add w3emc/2.10.0 if not present
+          grep -q 'load("w3emc/2.10.0")' "$f" || sed -i '/load("w3emc\/2.9.2")/a load("w3emc/2.10.0")' "$f"
+          # Add w3nco/2.4.1 if not present
+          grep -q 'load("w3nco/2.4.1")' "$f" || sed -i '/load("w3nco\/2.4.1")/a load("w3nco/2.4.1")' "$f"
+          # Add nemsiogfs/2.5.3 if not present
+          grep -q 'load("nemsiogfs/2.5.3")' "$f" || sed -i '/load("nemsiogfs\/2.5.3")/!b;:a;n;/^/!ba;i load("nemsiogfs/2.5.3")' "$f"
+          # Add sigio/2.3.3 if not present
+          grep -q 'load("sigio/2.3.3")' "$f" || sed -i '/load("sigio\/2.3.2")/a load("sigio/2.3.3")' "$f"
+          # Add zlib/1.2.13 if not present
+          grep -q 'load("zlib/1.2.13")' "$f" || sed -i '/load("zlib\/1.2.12")/a load("zlib/1.2.13")' "$f"
+          # Add libjpeg/2.1.0 if not present
+          grep -q 'load("libjpeg/2.1.0")' "$f" || sed -i '/load("jpeg\/9.1.0")/a load("libjpeg/2.1.0")' "$f"
+        fi
+        rm -rf ufs-weather-model
+
+    - name: Remove specific lines from aqm-utils_common.lua
+      run: |
+        sed -i '/mapl/d' modulefiles/aqm-utils_common.lua
+        sed -i '/scotch/d' modulefiles/aqm-utils_common.lua
+        sed -i '/gftl-shared/d' modulefiles/aqm-utils_common.lua
+        sed -i '/w3emc/d' modulefiles/aqm-utils_common.lua
+        sed -i '/ip/d' modulefiles/aqm-utils_common.lua
+        sed -i '/sp/d' modulefiles/aqm-utils_common.lua
+        sed -i '/g2tmpl/d' modulefiles/aqm-utils_common.lua
+        sed -i '/g2/d' modulefiles/aqm-utils_common.lua
+        sed -i '/crtm/d' modulefiles/aqm-utils_common.lua
+        sed -i '/bacio/d' modulefiles/aqm-utils_common.lua
+        sed -i '/fms/d' modulefiles/aqm-utils_common.lua
+        find modulefiles/ -type f -exec sed -i 's/UFS Weather Model/AQM-Utils/g' {} +
+        find modulefiles/ -type f -exec sed -i 's/UFS Model/AQM-Utils/g' {} +
+
+    - name: Set up Python and install pre-commit
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install pre-commit
+
+    - name: Run pre-commit hooks on modulefiles
+      run: |
+        source venv/bin/activate
+        pre-commit run --files $(find modulefiles/ -type f) || true
+
+    - name: Commit pre-commit fixes (if any)
+      run: |
+        git add modulefiles
+        git commit -m "Apply pre-commit fixes to modulefiles" || echo "No pre-commit changes to commit"
+
+    - name: Check for changes
+      id: changes
+      run: |
+        if git diff --quiet; then
+          echo "no_changes=true" >> $GITHUB_OUTPUT
+        else
+          echo "no_changes=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit changes
+      if: steps.changes.outputs.no_changes == 'false'
+      run: |
+        git add modulefiles
+        git commit -m "Update modulefiles from ufs-weather-model and replace references"
+
+    - name: Create Pull Request
+      if: steps.changes.outputs.no_changes == 'false'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Automated update: Sync modulefiles and clean up references"
+        branch: update-modulefiles
+        title: "Automated PR: Sync modulefiles from ufs-weather-model"
+        body: |
+          This weekly automated PR:
+          - Syncs modulefiles from ufs-weather-model
+          - Removes deprecated or unused dependencies from ufs_common.lua
+          - Replaces model references with 'NEXUS Model'
+          - Runs pre-commit formatting
