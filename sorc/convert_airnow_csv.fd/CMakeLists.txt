@@ -9,7 +9,7 @@ list(APPEND SRC_CLIB
     ${CLIB}/config.f90
     ${CLIB}/stdlit.f90
     ${CLIB}/string_utils.f90
-    ${CLIB}/date_utils.f90    
+    ${CLIB}/date_utils.f90
     ${CLIB}/expand_filename.f90
     ${CLIB}/shell-sort.f90
     ${CLIB}/netwrite3.no-udunits.f90

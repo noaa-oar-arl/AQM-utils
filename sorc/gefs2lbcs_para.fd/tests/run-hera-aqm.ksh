@@ -29,7 +29,7 @@ NUMTS=9
 cat > gefs2lbc-nemsio.ini <<EOF
 &control
  tstepdiff=$tstepdiff
- dtstep=6 
+ dtstep=6
  bndname='aothrj','aecj','aorgcj','asoil','numacc','numcor'
  mofile='gefs-input-$PDY/gfs.t00z.atmf','.nemsio'
  lbcfile='INPUT/gfs_bndy.tile7.','.nc'

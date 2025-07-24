@@ -57,7 +57,7 @@ subroutine cdf_to_probability (label, state, variance, lats, lons, thresh, &
       do i=1,nx
          if (variance(i,j) > 0.) then
             zscore(i,j) = (thresh - state(i,j)) / sqrt (variance(i,j))
-            if (zscore(i,j) >= 0.) then 
+            if (zscore(i,j) >= 0.) then
                d                = xnorm_cdf (zscore(i,j))
                probability(i,j) = 100. * (1.0 - d)
                cdf(i,j)         = d

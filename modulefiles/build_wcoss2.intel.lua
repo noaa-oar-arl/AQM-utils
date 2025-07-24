@@ -34,4 +34,3 @@ setenv("CMAKE_C_COMPILER","cc")
 setenv("CMAKE_CXX_COMPILER","CC")
 setenv("CMAKE_Fortran_COMPILER","ftn")
 setenv("CMAKE_Platform","wcoss2")
-

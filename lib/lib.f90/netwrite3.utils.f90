@@ -27,10 +27,10 @@ subroutine netwrite3_sync
 
    use netcdf
    implicit none
-   
+
    call ensure_data_mode			! must switch to data mode first
    call check (nf90_sync (fid))			! now sync metadata to file
-   
+
 end subroutine netwrite3_sync
 
 
@@ -46,7 +46,7 @@ subroutine netwrite3_close
    implicit none
 
    call check (nf90_close (fid))		! close netcdf file
-   
+
 end subroutine netwrite3_close
 
 
@@ -62,15 +62,15 @@ subroutine ensure_define_mode
 
    use netcdf
    implicit none
-   
+
    integer status
-   
+
    status = nf90_redef (fid)		! attempt to switch to define mode
-   
+
    if (status /= nf90_noerr .and. status /= nf90_eindefine) then
       call check (status)		! abort if unexpected error
    end if
-   
+
 end subroutine ensure_define_mode
 
 
@@ -88,21 +88,21 @@ subroutine ensure_data_mode
 
    use netcdf
    implicit none
-   
+
    integer status
 
 ! Switch to data mode.  Must perform extra header allocation, if pending.
-   
+
    status = nf90_enddef (fid, h_minfree = save_reserve_header)
    				! header allocation is simultaneous with enddef
-   
+
    if (status == nf90_noerr) then	! if header allocation was successful:
       save_reserve_header = 0		! indicate that allocation was completed
-   
+
    else if (status /= nf90_enotindefine) then	! ignore if already in data mode
       call check (status)		! abort if unexpected error
    end if
-   
+
 end subroutine ensure_data_mode
 
 
@@ -143,7 +143,7 @@ subroutine utcheck (status)
    implicit none
    integer, intent (in) :: status		! UDUnits result code
 
-   if (status /= 0) then 
+   if (status /= 0) then
       write (*, '(a,i0)') '*** netwrite3: Fatal, udunits error = ', status
       call exit (1)
    end if

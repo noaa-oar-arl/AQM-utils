@@ -1,0 +1,27 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: https://github.com/PyCQA/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        language_version: python3
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        language_version: python3
+  # - repo: https://github.com/PlasmaFAIR/fortitude-pre-commit
+  #   # Fortitude version.
+  #   rev: v0.7.3
+  #   hooks:
+  #     - id: fortitude
+  #       args: ["--fix", "--unsafe-fixes", "--preview", "--ignore", "C121,S001"]
+  #       files: \.(f90|F90|f|F|for|FOR|f77|F77)$
+
+exclude: ^\.venv/

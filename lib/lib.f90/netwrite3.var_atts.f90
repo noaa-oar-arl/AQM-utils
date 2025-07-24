@@ -27,11 +27,11 @@ subroutine write_var_att_byte (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    integer(i8),  intent (in) :: value
-   
+
    integer var_id
 
    call ensure_define_mode				    ! ensure define mode
@@ -46,11 +46,11 @@ subroutine write_var_att_byte_1d (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    integer(i8),  intent (in) :: value(:)
-   
+
    integer var_id
 
    call ensure_define_mode
@@ -65,11 +65,11 @@ subroutine write_var_att_dbl (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*),     intent (in) :: varname
    character(*),     intent (in) :: attname
    double precision, intent (in) :: value
-   
+
    integer var_id
 
    call ensure_define_mode				    ! ensure define mode
@@ -84,11 +84,11 @@ subroutine write_var_att_dbl_1d (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*),     intent (in) :: varname
    character(*),     intent (in) :: attname
    double precision, intent (in) :: value(:)
-   
+
    integer var_id
 
    call ensure_define_mode
@@ -103,11 +103,11 @@ subroutine write_var_att_float (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    real,         intent (in) :: value
-   
+
    integer var_id
 
    call ensure_define_mode				    ! ensure define mode
@@ -122,11 +122,11 @@ subroutine write_var_att_float_1d (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    real,         intent (in) :: value(:)
-   
+
    integer var_id
 
    call ensure_define_mode
@@ -141,11 +141,11 @@ subroutine write_var_att_int (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    integer,      intent (in) :: value
-   
+
    integer var_id
 
    call ensure_define_mode				    ! ensure define mode
@@ -160,11 +160,11 @@ subroutine write_var_att_int_1d (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    integer,      intent (in) :: value(:)
-   
+
    integer var_id
 
    call ensure_define_mode
@@ -179,11 +179,11 @@ subroutine write_var_att_short (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    integer(i16), intent (in) :: value
-   
+
    integer var_id
 
    call ensure_define_mode
@@ -198,11 +198,11 @@ subroutine write_var_att_short_1d (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    integer(i16), intent (in) :: value(:)
-   
+
    integer var_id
 
    call ensure_define_mode
@@ -217,7 +217,7 @@ subroutine write_var_att_str (varname, attname, value)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varname
    character(*), intent (in) :: attname
    character(*), intent (in) :: value

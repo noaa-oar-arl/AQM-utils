@@ -53,16 +53,16 @@ subroutine std_dev_grid (data, tags, vmiss, thresh, mean, variance, stdev)
    real,    intent (in ) :: vmiss	! missing value in input data
    real,    intent (in ) :: thresh	! 0-1: required fraction of data present
    					! applies only to tag selected data
-   
+
    real, allocatable, intent (out) :: mean(:,:)		! mean output grid (X,Y)
    real, allocatable, intent (out) :: variance(:,:)	! variance output grid
    real, allocatable, intent (out) :: stdev(:,:)	! std. deviation output
 
 ! Local variables.
-   
+
    integer nx, ny, ntimes, j, required_count
    real vmissl, vmissh
-   
+
    integer, allocatable :: ndata(:,:)
    double precision, allocatable :: sumx(:,:), sdd(:,:), dif(:,:)
    double precision, allocatable :: dmean(:,:), dvariance(:,:)
@@ -75,10 +75,10 @@ subroutine std_dev_grid (data, tags, vmiss, thresh, mean, variance, stdev)
 
    vmissl = vmiss - .0001 * abs (vmiss)		! test limits for missing values
    vmissh = vmiss + .0001 * abs (vmiss)
-   
+
    required_count = ceiling (thresh * count (tags))   ! # of time steps required
    					! for each grid point for valid output
-   
+
    required_count = max (1, required_count)	! require at least one datum
    						! at each grid point
 ! Consistency check.
@@ -92,7 +92,7 @@ subroutine std_dev_grid (data, tags, vmiss, thresh, mean, variance, stdev)
    end if
 
 ! Allocate arrays.
-   
+
    allocate (ndata(nx,ny), sumx(nx,ny), sdd(nx,ny))	   ! work arrays
    allocate (dif(nx,ny), dmean(nx,ny), dvariance(nx,ny))
    allocate (mean(nx,ny), variance(nx,ny), stdev(nx,ny))   ! output arrays
@@ -109,7 +109,7 @@ subroutine std_dev_grid (data, tags, vmiss, thresh, mean, variance, stdev)
          ndata = ndata + 1
       end where
    end do
-   
+
    where (ndata > 0)				! suppress divide by zero
       dmean = sumx / ndata			! double precision for calcs
       mean = dmean				! single precision for output
@@ -118,7 +118,7 @@ subroutine std_dev_grid (data, tags, vmiss, thresh, mean, variance, stdev)
 ! Compute variance and standard deviation.
 
    sdd = 0.					! clear gaccumulator grid
-   
+
    do j = 1, ntimes
       if (.not. tags(j)) cycle
       where (data(:,:,j) < vmissl .or. data(:,:,j) > vmissh)
@@ -131,7 +131,7 @@ subroutine std_dev_grid (data, tags, vmiss, thresh, mean, variance, stdev)
       dvariance = sdd / (ndata - 1)		! normal points, 2 or more data
       variance = dvariance
       stdev = sqrt (dvariance)
-   
+
    elsewhere
       variance = 0.		 		! for degenerate points
       stdev = 0.				! with only one datum
@@ -141,16 +141,16 @@ subroutine std_dev_grid (data, tags, vmiss, thresh, mean, variance, stdev)
 ! if debug parameters are left at their default values.
 
    if (std_dev_grid_min_count >= 0 .or. std_dev_grid_max_count >= 0) then
-   
+
       if (  minval (ndata) < std_dev_grid_min_count &
        .or. maxval (ndata) > std_dev_grid_max_count) then
          print *
          print *, '*** std_dev_grid: tags array:'
-      
+
          do j = 1, ntimes, 20
             write (*, "(i6, ' :', 20l2)") j, tags(j:min (j+19, ntimes))
          end do
-      
+
          print *
          write (*, '(2(a,i6))') ' *** std_dev_grid: Min data count =', &
             minval (ndata), ', limit =', std_dev_grid_min_count
@@ -160,7 +160,7 @@ subroutine std_dev_grid (data, tags, vmiss, thresh, mean, variance, stdev)
          print *, '*** std_dev_grid: Abort: Counts outside of debug limits.'
          stop 99
       end if
-      
+
    end if
 
 ! Set missing values where data count is below threshold.

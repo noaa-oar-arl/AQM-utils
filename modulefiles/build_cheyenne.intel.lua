@@ -53,4 +53,3 @@ setenv("CMAKE_Fortran_COMPILER","ifort")
 setenv("CMAKE_Platform","cheyenne.intel")
 
 whatis("Description: AQM-utils build environment")
-

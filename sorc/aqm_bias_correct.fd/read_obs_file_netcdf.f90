@@ -271,7 +271,7 @@ subroutine read_obs_file_netcdf (infile, varname_obs, year, month, day, diag, &
       fmt2 = '(3x, 2(a, f0.3), 2a)'
 
       print fmt1, 'nsites, ntimes           = ', nsites, ' ', ntimes
-      
+
       print fmt1, 'Count ' // trim(varname_obs) // ' missing      = ', nmiss_obs
       print fmt1, 'Count latitudes  missing = ', nmiss_lat
       print fmt1, 'Count longitudes missing = ', nmiss_lon

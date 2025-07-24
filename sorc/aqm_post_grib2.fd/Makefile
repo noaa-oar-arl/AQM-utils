@@ -5,7 +5,7 @@
 # 2014-jul-16	Clean version for new release.
 # 2016-jan-12	Upgrade to Dave's current fortran library structure.
 # 2016-feb-10	Update for get_param_module.
-# 2021-Jan-03   Modify for support RRFS-CMAQ 
+# 2021-Jan-03   Modify for support RRFS-CMAQ
 #
 # This make file uses a single large compile command, rather
 # than incremental compiles.  Environment variables are used to
@@ -32,10 +32,10 @@ Lib    =   ../../lib/sorc/lib.f90
 NETCDF_LDFLAGS = -L${NETCDF}/lib -lnetcdf -lnetcdff
 LIB_NETCDF = -I${NETCDF}/include $(NETCDF_LDFLAGS)
 
-F90_CMD   = ftn 
+F90_CMD   = ftn
 
 F90_FLAGS4 = -O3
-#F90_FLAGS5 = 
+#F90_FLAGS5 =
 
 F90_FLAGS  = $(F90_FLAGS1) $(F90_FLAGS2)  \
              $(F90_FLAGS3) $(F90_FLAGS4)  \
@@ -55,13 +55,13 @@ Lib1 =		$(Lib)/config.f90 \
 
 Lib2 =		$(Lib)/date_utils.f90		$(Lib)/get_free_unit.f90 \
 		$(Lib)/get_param_module.f90	$(Lib)/message_nolog.f90 \
-		$(Lib)/netwrite3.no-udunits.f90	$(Lib)/read_line.f90 
-	
+		$(Lib)/netwrite3.no-udunits.f90	$(Lib)/read_line.f90
+
 
 Lib3 =         $(Lib)/next_time.f90
 
 #NETCDF_LIB  =  ${NETCDF_LDFLAGS}  ${NETCDF_LDFLAGS_F}
-NETCDF_LIB  =  $(NETCDF_LDFLAGS) 
+NETCDF_LIB  =  $(NETCDF_LDFLAGS)
 W3_LIB      = ${W3NCO_LIB4} ${W3EMC_LIB4}
 
 Lib4   =  \
@@ -89,7 +89,7 @@ Subs.plib =	$(Plib)/expand_filename.f90 \
 
 # Main program.
 
-Subs.main =	$(Subs.lib) $(Subs.plib) 
+Subs.main =	$(Subs.lib) $(Subs.plib)
 
 F90_CLEANUP = *.o *.mod *__genmod.f90
 
@@ -106,7 +106,7 @@ $(Prg):	$(Prg).f90 $(Subs.main) $(Hidden) makefile
 clean:
 	@(rm $(F90_CLEANUP) *.o  *.dwarf $(Prg) ; echo) >& /dev/null
 	@(rm -r *.dSYM ; echo) >& /dev/null
-install: 
+install:
 	-cp $(Prg) ../../exec/.
 clobber: clean
 	-rm -f $(Prg)
