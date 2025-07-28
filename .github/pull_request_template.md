@@ -22,6 +22,8 @@
   - [ ] Orion
   - [ ] Hercules
   - [ ] Jet
+  - [ ] GAEA C6
+  - [ ] Ursa
 
 ### Test cases:
 
@@ -35,10 +37,15 @@
 
 ## ISSUE:
 
-<!-- If this PR is resolving or referencing one or more issues, in this repository or elsewhere, list them here. -->
+<!-- If this PR is resolving or referencing one or more issues, in this repository or elsewhere, list them here.
 
 - Fixes the issue(s) mentioned in #9999
 
+-->
 ## CONTRIBUTORS (optional):
 
-<!-- If others have contributed to this work aside from the PR author, list them here -->
+<!-- If others have contributed to this work aside from the PR author, list them here
+
+- @Users1
+- @User2
+-->
