@@ -12,7 +12,8 @@ AQM-utils is a collection of utilities and source code for Air Composition Model
 - `RAVE_remake.allspecies.aqmna9km.g1144.py`: RAVE post-processing for 9km grid.
 - `stack-pt-merge.py`: Merge point source stacks.
 - Subdirectories for specialized utilities:
-  - `gefsaero_grib_to_cube/`
+  - `gefsaero_grib_to_cube/`: Interpolate GRIB2 GEFS-Aerosols fields to FV3 cold start files
+  - `gdas-cmaqprep`: A Python tool for processing GDAS (Global Data Assimilation System) data for use with the CMAQ (Community Multiscale Air Quality) modeling system.
 
 **Fortran Source Modules** (located in `sorc/`):
 - `aqm_bias_correct.fd/`: Bias correction routines.
