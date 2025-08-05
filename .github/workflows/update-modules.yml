@@ -31,23 +31,21 @@ jobs:
         f="modulefiles/aqm-utils_common.lua"
         if [ -f "$f" ]; then
           # Add bufr/12.1.0 if not present
-          grep -q 'load("bufr/12.1.0")' "$f" || sed -i '/load("bufr\/11.7.1")/a load("bufr/12.1.0")' "$f"
+          grep -q '{\["bufr"\][^}]*"12.1.0"' modulefiles/aqm-utils_common.lua || sed -i '/{[[]\"scotch\"[]][^}]*\"7.0.4\"[[:space:]]*},/a\  {["bufr"]            = "12.1.0"},' modulefiles/aqm-utils_common.lua
           # add wgrib2/3.6.0 if not present
-          grep -q 'load("wgrib2/3.6.0")' "$f" || sed -i '/load("wgrib2\/3.6.0")/!b;:a;n;/^/!ba;i load("wgrib2/3.6.0")' "$f"
+          grep -q '{\["wgrib2"\][^}]*"3.6.0"' modulefiles/aqm-utils_common.lua || sed -i '/{[[]\"scotch\"[]][^}]*\"7.0.4\"[[:space:]]*},/a\  {["wgrib2"]         = "3.6.0"},' modulefiles/aqm-utils_common.lua
           # add zlib/1.2.13 if not present
-          grep -q 'load("zlib/1.2.13")' "$f" || sed -i '/load("zlib\/1.2.11")/a load("zlib/1.2.13")' "$f"
+          grep -q '{\["zlib"\][^}]*"1.2.13"' modulefiles/aqm-utils_common.lua || sed -i '/{[[]\"scotch\"[]][^}]*\"7.0.4\"[[:space:]]*},/a\  {["zlib"]           = "1.2.13"},' modulefiles/aqm-utils_common.lua
           # Add w3emc/2.10.0 if not present
-          grep -q 'load("w3emc/2.10.0")' "$f" || sed -i '/load("w3emc\/2.9.2")/a load("w3emc/2.10.0")' "$f"
+          grep -q '{\["w3emc"\][^}]*"2.10.0"' modulefiles/aqm-utils_common.lua || sed -i '/{[[]\"scotch\"[]][^}]*\"7.0.4\"[[:space:]]*},/a\  {["w3emc"]          = "2.10.0"},' modulefiles/aqm-utils_common.lua
           # Add w3nco/2.4.1 if not present
-          grep -q 'load("w3nco/2.4.1")' "$f" || sed -i '/load("w3nco\/2.4.1")/a load("w3nco/2.4.1")' "$f"
+          grep -q '{\["w3nco"\][^}]*"2.4.1"' modulefiles/aqm-utils_common.lua || sed -i '/{[[]\"scotch\"[]][^}]*\"7.0.4\"[[:space:]]*},/a\  {["w3nco"]          = "2.4.1"},' modulefiles/aqm-utils_common.lua
           # Add nemsiogfs/2.5.3 if not present
-          grep -q 'load("nemsiogfs/2.5.3")' "$f" || sed -i '/load("nemsiogfs\/2.5.3")/!b;:a;n;/^/!ba;i load("nemsiogfs/2.5.3")' "$f"
+          grep -q '{\["nemsiogfs"\][^}]*"2.5.3"' modulefiles/aqm-utils_common.lua || sed -i '/{[[]\"scotch\"[]][^}]*\"7.0.4\"[[:space:]]*},/a\  {["nemsiogfs"]       = "2.5.3"},' modulefiles/aqm-utils_common.lua
           # Add sigio/2.3.3 if not present
-          grep -q 'load("sigio/2.3.3")' "$f" || sed -i '/load("sigio\/2.3.2")/a load("sigio/2.3.3")' "$f"
-          # Add zlib/1.2.13 if not present
-          grep -q 'load("zlib/1.2.13")' "$f" || sed -i '/load("zlib\/1.2.12")/a load("zlib/1.2.13")' "$f"
+          grep -q '{\["sigio"\][^}]*"2.3.3"' modulefiles/aqm-utils_common.lua || sed -i '/{[[]\"scotch\"[]][^}]*\"7.0.4\"[[:space:]]*},/a\  {["sigio"]          = "2.3.3"},' modulefiles/aqm-utils_common.lua
           # Add libjpeg/2.1.0 if not present
-          grep -q 'load("libjpeg/2.1.0")' "$f" || sed -i '/load("jpeg\/9.1.0")/a load("libjpeg/2.1.0")' "$f"
+          grep -q '{\["libjpeg"\][^}]*"2.1.0"' modulefiles/aqm-utils_common.lua || sed -i '/{[[]\"scotch\"[]][^}]*\"7.0.4\"[[:space:]]*},/a\  {["libjpeg"]        = "2.1.0"},' modulefiles/aqm-utils_common.lua
         fi
         rm -rf ufs-weather-model
 
@@ -56,16 +54,16 @@ jobs:
         sed -i '/mapl/d' modulefiles/aqm-utils_common.lua
         sed -i '/scotch/d' modulefiles/aqm-utils_common.lua
         sed -i '/gftl-shared/d' modulefiles/aqm-utils_common.lua
-        sed -i '/w3emc/d' modulefiles/aqm-utils_common.lua
         sed -i '/ip/d' modulefiles/aqm-utils_common.lua
         sed -i '/sp/d' modulefiles/aqm-utils_common.lua
         sed -i '/g2tmpl/d' modulefiles/aqm-utils_common.lua
-        sed -i '/g2/d' modulefiles/aqm-utils_common.lua
         sed -i '/crtm/d' modulefiles/aqm-utils_common.lua
-        sed -i '/bacio/d' modulefiles/aqm-utils_common.lua
         sed -i '/fms/d' modulefiles/aqm-utils_common.lua
         find modulefiles/ -type f -exec sed -i 's/UFS Weather Model/AQM-Utils/g' {} +
         find modulefiles/ -type f -exec sed -i 's/UFS Model/AQM-Utils/g' {} +
+        find modulefiles/ -type f -exec sed -i 's/build UFS/build AQM-Utils/g' {} +
+        find modulefiles/ -type f -exec sed -i 's/UFS build/AQM-Utils build/g' {} +
+        find modulefiles/ -type f -exec sed -i 's/load("ufs_common")/load("aqm-utils_common")/g' {} +
 
     - name: Set up Python and install pre-commit
       run: |
