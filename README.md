@@ -37,14 +37,8 @@ AQM-utils provides a `build.sh` script to automate the build process for support
 1. Make sure you have the required modules and environment variables set for your platform (see below).
 2. Run the build script from the repository root:
    ```bash
-   ./build.sh [platform]
+   ./build.sh
    ```
-
-Replace [platform] with one of:
-
-wcoss2 (Cactus/Dogwood)
-hera
-orion
 
 What the Script Does
 - Loads the appropriate modulefile for your platform
@@ -78,27 +72,13 @@ You can still build manually using the steps below for each platform.
 cd AQM-utils
 source versions/build.ver.wcoss2
 module use modulefiles
-module load build_wcoss2.intel
+module load build_[machine].[compiler]
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=.. -DCMAKE_INSTALL_BINDIR=exec
 make -j2
-where `[machine]` is `hera` or `orion`.
+where `[machine]` is `hera` for example.
 ```
-
-
-```
-cd AQM-utils
-module use modulefiles
-module load build_[machine].intel
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=.. -DCMAKE_INSTALL_BINDIR=exec -DBUILD_POST_STAT=off
-make -j2
-make install
-```
-
-where `[machine]` is `hera` or `orion`.
 
 ## Run pre-commit
 ## Pre-commit Setup and Usage
