@@ -38,7 +38,7 @@ contains
 subroutine parse_varexp (string, varname, subnames, nsubs)
 
    implicit none
-   
+
    character(*), intent(in ) :: string		! input expression string
    character(*), intent(out) :: varname		! output variable name
    character(*), intent(out) :: subnames(:)	! output subscript names
@@ -47,10 +47,10 @@ subroutine parse_varexp (string, varname, subnames, nsubs)
 ! Local variables.
 
    character c*1, detail*80, prefix*2
-   
+
    integer i, j, start, eol, ccond, vlen, slen
    integer state, next_state, err_code
-   
+
    logical err					! error status flag
 
 !---------------------------------------
@@ -143,12 +143,12 @@ subroutine parse_varexp (string, varname, subnames, nsubs)
 !---------------------------------------
 ! Parsing loop, single pass.
 !---------------------------------------
-   
+
    state = vwait				! initial state = var name wait
    nsubs = 0
    err = .false.
    eol = len_trim (string)			! get non-blank length of string
-   
+
 char_loop: &
    do i = 1, eol+1				! scan full expression;
    						! last pass = dummy pass for EOL
@@ -156,16 +156,16 @@ char_loop: &
       if (i <= eol) c = string (i:i)		! get current character
 
 ! Determine the next character condition.
-      
+
       if (i > eol) then				! end of line
          ccond = c_eol
-      
+
       else if (c == ' ') then			! blank, i.e. space
          ccond = cblank
-      
+
       else if ((c >= 'A' .and. c <= 'Z') .or. (c >= 'a' .and. c <= 'z')) then
          ccond = calpha				! letters A-Z and a-z
-      
+
       else if ((c >= '0' .and. c <= '9') .or. c == '_') then
          ccond = cdigit				! digits 0-9 and underscore
 
@@ -192,7 +192,7 @@ char_loop: &
 ! Handle error codes from the transition table.
 
       if (next_state < 1 .or. next_state > nstates) then
-      
+
          do j = 1, size (err_messages)		! find matching error message
             prefix = trim (err_messages(j))	! prefix to var, make XLF happy;
             					! use trim to fix trunc warning
@@ -203,7 +203,7 @@ char_loop: &
                exit char_loop
             end if
          end do
-         
+
          detail = 'Internal error, invalid code from state transition table'
          err = .true.				! unknown code = program error;
          exit char_loop				! force message and abort
@@ -227,7 +227,7 @@ char_loop: &
             err = .true.
             exit char_loop
          end if
-            
+
          varname = string(start:i-1)		! output the var name
       end if
 
@@ -241,14 +241,14 @@ char_loop: &
             err = .true.
             exit char_loop
          end if
-            
+
          nsubs = nsubs + 1
          if (nsubs > size (subnames)) then
             detail = 'Too many subscripts'
             err = .true.
             exit char_loop
          end if
-            
+
          subnames(nsubs) = string(start:i-1)	 ! output the subscript name
       end if
 

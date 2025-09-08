@@ -43,14 +43,14 @@ contains
 
 subroutine real_to_compact_string (num, fmt_prototype, outstr)
    implicit none
-   
+
    real,         intent (in)  :: num		! number to be formatted
    character(*), intent (in)  :: fmt_prototype	! prototype format with maximum
 						!   signif. digits; eg. (f0.3)
 						!   must include parentheses
-   
+
    character(*), intent (out) :: outstr		! output string
-   
+
    integer j, dp				! local vars
 
 ! Use write statement to convert number to initial string.
@@ -72,7 +72,7 @@ subroutine real_to_compact_string (num, fmt_prototype, outstr)
    if (dp == 0) return				! all done, no further changes
 
 ! Remove excess trailing zeros.
-   
+
    do						! scan right to left
       if (j < 3) exit				! stop if minimal length
       if (outstr(j:j) /= '0') exit		! stop on any non-zero character

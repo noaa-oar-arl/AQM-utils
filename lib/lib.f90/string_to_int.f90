@@ -30,16 +30,16 @@
 !---------------------------------------------------------------------------
 
 subroutine string_to_int (string, num, flag)
-	
+
    implicit none
    character string*(*)
    integer num
    logical flag
 
    flag = .false.				! assume error until done
-   
+
    if (len(string) == 0) return			! reject a null string
-   
+
    if (string(1:1) == '-') then
       call string_to_intu (string(2:), num)	! convert neg number
       if (num < 0) return
@@ -49,7 +49,7 @@ subroutine string_to_int (string, num, flag)
       call string_to_intu (string, num)		! convert pos number
       if (num < 0) return
    end if
-   
+
    flag = .true.				! normal return, good integer
    return
 

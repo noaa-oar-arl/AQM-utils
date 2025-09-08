@@ -9,13 +9,13 @@ set(PLIB "${LIB_DIR}/lib.probability")
 message("=== AQM library directory: ${LIB_DIR}")
 
 list(APPEND SRC_FLIB1
-    ${FLIB}/config.f90 
+    ${FLIB}/config.f90
     ${FLIB}/stdlit.f90
     ${FLIB}/string_utils.f90
     )
 
 list(APPEND SRC_FLIB2
-    ${FLIB}/binomial_coefficient.f90	
+    ${FLIB}/binomial_coefficient.f90
     ${FLIB}/date_utils.f90
     ${FLIB}/distance_btw_coords.f90
     ${FLIB}/expand_filename.f90
@@ -26,7 +26,7 @@ list(APPEND SRC_FLIB2
     ${FLIB}/message_nolog.f90
     ${FLIB}/multisets.f90
     ${FLIB}/netcdf_sup.f90
-    ${FLIB}/netwrite3.no-udunits.f90 
+    ${FLIB}/netwrite3.no-udunits.f90
     ${FLIB}/print_omp_info.f90
     ${FLIB}/read_line.f90
     ${FLIB}/read_netcdf_var.f90
@@ -39,36 +39,36 @@ list(APPEND SRC_BLIB
     ${BLIB}/bufrlib_interface.f90
     ${BLIB}/gridlocation.f90
     ${BLIB}/print_library_info.f90
-    ${BLIB}/read_bufr_var.f90    
+    ${BLIB}/read_bufr_var.f90
     ${BLIB}/read_grid_coords.f90
     ${BLIB}/read_gridded_aqm.f90
     ${BLIB}/read_gridded_hourly.f90
-    ${BLIB}/read_gridded_vars.f90   
+    ${BLIB}/read_gridded_vars.f90
     ${BLIB}/read_table_lines.f90
     ${BLIB}/shell-sort.descending.f90
     )
 
 list(APPEND SRC_ALIB1
-    ${ALIB}/compute_weight_sets.f90 
+    ${ALIB}/compute_weight_sets.f90
     ${ALIB}/rmse.f90
-    ${ALIB}/stdevTNcirc.f90         
+    ${ALIB}/stdevTNcirc.f90
     ${ALIB}/wind_dir_error.f90
     )
 
-list(APPEND SRC_ALIB2       
-    ${ALIB}/find_analog.f90         
+list(APPEND SRC_ALIB2
+    ${ALIB}/find_analog.f90
     ${ALIB}/kf_luca.f90
     ${ALIB}/short_training_period.f90
-    ${ALIB}/analog_ensemble.f90     
+    ${ALIB}/analog_ensemble.f90
     ${ALIB}/anenmean_method.f90
-    ${ALIB}/kfan_method.f90         
+    ${ALIB}/kfan_method.f90
     ${ALIB}/filter_dispatch.f90
-    ${ALIB}/weight_control.f90      
+    ${ALIB}/weight_control.f90
     ${ALIB}/analog_control.f90
     )
 
 list(APPEND SRC_PLIB1
-    ${PLIB}/haversine_km.f90        
+    ${PLIB}/haversine_km.f90
     ${PLIB}/jacobi.f90
     ${PLIB}/lubksb.f90
     ${PLIB}/ludcmp.f90
@@ -82,7 +82,7 @@ list(APPEND SRC_PLIB2
     ${PLIB}/daily_averages.f90
     ${PLIB}/daily_max.f90
     ${PLIB}/find_nearest_grid_points.f90
-    ${PLIB}/gridded_climatology.f90 
+    ${PLIB}/gridded_climatology.f90
     ${PLIB}/make_daily.f90
     ${PLIB}/regress.f90
     ${PLIB}/site_climatology.f90

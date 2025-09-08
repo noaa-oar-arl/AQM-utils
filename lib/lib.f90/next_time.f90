@@ -16,7 +16,7 @@ contains
 !  FUNCTION:
 !
 !       Subroutine to add  DTIME  to the current time, and then
-!       update the clock  JTIME  and calendar  IDATE  accordingly.  
+!       update the clock  JTIME  and calendar  IDATE  accordingly.
 !       Output is fully normalized (0 <= JTIME <= 235959).
 !
 !   IDATE is stored in the form   YYYYDDD = YEAR*1000  +  DAY
@@ -25,7 +25,7 @@ contains
 !
 !  CALLS:  none
 !
-!  REVISION HISTORY: 
+!  REVISION HISTORY:
 !       prototype 10/1990 by Carlie J. Coats, Jr., MCNC Environmental Programs
 !
 !       Version    3/1993 by CJC for CRAY, etc.
@@ -45,7 +45,7 @@ contains
 !       Version 1/2007 by CJC:  handle negative JDATEs correctly
 !
 !       Modified 03/2010 by CJC: F9x changes for I/O API v3.1
-!       Modified 12/2014 by JPHUANG: bias correction (nc -->grib1) 
+!       Modified 12/2014 by JPHUANG: bias correction (nc -->grib1)
 !........................................................................
 
         IMPLICIT  NONE
@@ -180,7 +180,7 @@ contains
 
         JDATE = DAYS
 
-        RETURN 
+        RETURN
 
 200     CONTINUE        !  loop normalizing day numbers > 365,366
 

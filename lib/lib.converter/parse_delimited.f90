@@ -91,7 +91,7 @@ module parse_delimited_mod
 contains
 
 subroutine parse_delimited (line, delim, valid_quotes, first, last, n_fields)
-   
+
    implicit none
    character(*), intent (in ) :: line		! input text line to be parsed;
    						!   null string is allowed
@@ -108,12 +108,12 @@ subroutine parse_delimited (line, delim, valid_quotes, first, last, n_fields)
 ! Local variables.
 
    character qch*1			! quote character for current field
-   
+
    integer p				! char pointer within line
    integer j				! char offset when using index()
    integer eol				! pointer to last character in line
    integer fi				! field index into arrays
-   
+
    logical valid			! T = valid quoting, F = rule violation
 
 ! Note:  This method always generates the correct output for null
@@ -137,7 +137,7 @@ field_loop: &
       if (p > eol) exit field_loop	! all done: null field at end of line
 
 ! Scan past leading spaces in advance of a possible quoted field.
-      
+
       do while (line(p:p) == ' ')	! scan past leading spaces, if any
          p = p + 1
          if (p > eol) exit field_loop	! all done: all blanks at end of line
@@ -166,21 +166,21 @@ quoted_field: &
 
 substring_loop: &
          do				! scan through 1 or more quoted substrs
-            
+
             j = index (line(p+1:eol), qch)  ! find the trailing quote
             				    ! (okay for null string, p >= eol)
-            
+
             if (j == 0) then		! if trailing quote is missing...
-               valid = .false.		! quotes are unbalanced; 
+               valid = .false.		! quotes are unbalanced;
                exit substring_loop	! revert to unquoted
             end if
-            
+
             p = p + j + 1		  ! point to next char after 2nd quote
             if (p > eol) exit field_loop  ! all done: EOL after second quote
-            
+
             if (line(p:p) /= qch) &	! done unless two consecutive quotes
                exit substring_loop	!   (escape sequence)
-         
+
          end do substring_loop		! loop if two consecutive quotes
 
 ! Scan past trailing spaces following a quoted field.
@@ -221,13 +221,13 @@ substring_loop: &
 
       j = index (line(p:eol), delim)	! find the next delimiter
       					! (okay for null string, p > eol)
-      
+
       if (j == 0) exit field_loop	! no delimiter, last field in line
 
       p = p + j				! point to next char following delimiter
          				! this might be 1 char past end of line
       last(fi) = p - 2			! save last char position in field
-      
+
    end do field_loop			! go to next field; next will handle EOL
 
 ! Always terminate the last field on the line.

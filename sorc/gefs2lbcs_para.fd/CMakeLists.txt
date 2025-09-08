@@ -18,7 +18,7 @@ find_package(w3nco REQUIRED)
 
 target_link_libraries(
   ${lib_name}
-  PUBLIC 
+  PUBLIC
   nemsio::nemsio
   bacio::bacio_4
   w3nco::w3nco_d

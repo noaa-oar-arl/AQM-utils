@@ -32,10 +32,10 @@
 
       implicit none
       character out_str*(*)
-	
+
       character str*24, blank, m1
       character mmm*3, dd*2, yyyy*4, hh*2, mm*2, ss*2
-   
+
       blank = ' '
       call fdate (str)			! fetch system date and time string
 
@@ -51,7 +51,7 @@
 ! mm  = minutes
 ! ss = seconds
 ! yyyy = 4-digit year
-   
+
       if (str(9:9).eq.blank) then	! force leading zero format into dd
          str(9:9) = '0'
       end if
@@ -62,7 +62,7 @@
       mm = str(15:16)
       ss = str(18:19)
       yyyy = str(21:24)
-   
+
       m1 = mmm(1:1)		! force first letter of month to lowercase
       if (m1.ge.'A' .and. m1.le.'Z') then
          mmm(1:1) = char( ichar(m1) + ichar('a') - ichar('A') )

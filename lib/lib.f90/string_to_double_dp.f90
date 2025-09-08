@@ -39,47 +39,47 @@
 !---------------------------------------------------------------------------
 
 subroutine string_to_double_dp (string, decimal, val, val_status)
-   
+
    implicit none
-   
+
    character,        intent (in   ) :: string*(*)	! args
    character,        intent (in   ) :: decimal*1
    double precision, intent (  out) :: val
    logical,          intent (  out) :: val_status
-   
+
    integer i, strlen, ios			! local vars
    logical dp_flag				! indicates first d.p. was found
    logical copy_flag				! indicates string copy was made
    character copy*30				! string copy for d.p. overwrite
-   
+
    val_status = .false.				! assume reject until proven
 
    strlen = len_trim (string)
    if (strlen == 0) return			! reject a null string
    if (strlen > 30) return			! reject a string too long
-   
+
    dp_flag = .false.
    copy_flag = .false.
-   
+
    do i = 1, strlen				! scan string for non-digits
-      
+
       if (string(i:i) == decimal) then		! if decimal "point"...
          if (dp_flag) return			! reject second decimal point
          dp_flag = .true.
-         
+
          if (decimal /= '.') then		! copy string only if needed
          					! for non-standard decimal point
             copy(1:strlen) = string(1:strlen)	! (length limited for speed)
             copy(i:i) = '.'		! overwrite custom dp. with standard dp.
             copy_flag = .true.
          end if
-         
+
       else					! all other valid chars exc. dp.
          if (index ('0123456789-', string(i:i)) == 0) return
       end if					! reject non-digit
-   
+
    end do
-   
+
    if (copy_flag) then				! convert string to real
       read (copy(1:strlen), *, iostat=ios) val		! use copy if made
    else

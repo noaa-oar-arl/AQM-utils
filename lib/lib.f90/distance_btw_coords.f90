@@ -22,20 +22,20 @@
 
 real function distance_btw_coords (lat1, lon1, lat2, lon2) &
    result (dist)
-   
+
    implicit none
-   
+
    real, intent(in) :: lat1, lon1, lat2, lon2			! calling args
-   
+
    double precision XLT1,XLG1,XLT2,XLG2,PIE,ADJX	! local vars
 
    XLT1 = lat1				! convert single to double precision
    XLG1 = lon1
    XLT2 = lat2
    XLG2 = lon2
-   
+
    PIE = .0174532925
-   
+
    ADJX=COS(((XLT1+XLT2)/2.)*PIE)*111.17774734
    dist = SQRT(((XLG2-XLG1)*ADJX)**2 + ((XLT2-XLT1)*111.17774734)**2)
 

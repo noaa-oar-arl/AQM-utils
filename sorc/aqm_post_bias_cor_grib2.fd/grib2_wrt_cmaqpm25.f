@@ -1,9 +1,9 @@
-      program grib2_wrt_cmaqpm25 
+      program grib2_wrt_cmaqpm25
 !      program test_readgrib2
 !
 !-----------------------------------------------------------------
 ! ABSTRACT: This routine is to write out a new grib2 file
-!    by J Huang  
+!    by J Huang
 !   January 2015 modified for PM2.5 grib2 CONUS (442*265)
 !-----------------------------------------------------------------
 !
@@ -19,7 +19,7 @@
       integer ipdstmpllen
       integer idrstmpllen
       integer idrsnum,ibmap,numcoord,ipdsnum,idefnum
-      
+
       integer,dimension(100) :: igdstmpl
       integer,dimension(100) :: ipdstmpl
       integer,dimension(100) :: idrstmpl
@@ -52,7 +52,7 @@
       call baopen(ifilw,trim(cout),ierr)
       print *,'cout=',trim(cout),'ierr=',ierr
 !
-!-- section 0: 
+!-- section 0:
       listsec0(1)=0       ! Discipline: table 0.0
       listsec0(2)=2       ! grib edition number
 !
@@ -78,8 +78,8 @@
 !-- section 3: grid definition section
       igds(1)=0           ! Source of grid definition (Table 3.0) (0:specified in the code)
       igds(2)=nx*ny       ! Number of grid points in the defined grid
-      igds(3)=0           ! Number of octets for optional list of numbers defining number of points 
-      igds(4)=0           ! Interpretation of list of numbers defining number of points 
+      igds(3)=0           ! Number of octets for optional list of numbers defining number of points
+      igds(4)=0           ! Interpretation of list of numbers defining number of points
 !-- example: Gaussian Lat/lon
       igds(5)=30          ! Grid definition template number (Table 3.1) (0:Lat/lon, 30:Lambert 40:Gaussian)
       if( igds(5)==30) then
@@ -89,17 +89,17 @@
 !-- set up grid definition template 3.30
         igdstmpl=0
         igdstmpl(1)=6       ! Shape of the Earth (Table 3.2) (6:Shape of the Earth = 6,371,229.0 m)
-        igdstmpl(8)=nx      ! Ni . number of points along a paralell 
-        igdstmpl(9)=ny      ! Nj . number of points along a meridian 
-        igdstmpl(10)=21821000      ! Basic angle of the initial production domain 
-        igdstmpl(11)=239372000      ! Subdivisions of basic angle used to define extreme longitudes and latitudes, and direction increments 
+        igdstmpl(8)=nx      ! Ni . number of points along a paralell
+        igdstmpl(9)=ny      ! Nj . number of points along a meridian
+        igdstmpl(10)=21821000      ! Basic angle of the initial production domain
+        igdstmpl(11)=239372000      ! Subdivisions of basic angle used to define extreme longitudes and latitudes, and direction increments
         latstt=8
         lonstt=33000000
         latlst=-88541961
         lonlst=358125000
         dxval=1875000
         igdstmpl(12)=latstt ! La1 - latitude of first grid point
-        igdstmpl(13)=lonstt ! Lo1 - longitude of first grid point 
+        igdstmpl(13)=lonstt ! Lo1 - longitude of first grid point
         igdstmpl(14)=263000000
         igdstmpl(15)=12000000
         igdstmpl(16)=12000000
@@ -109,13 +109,13 @@
         igdstmpl(20)=45000000
         igdstmpl(21)=0
         igdstmpl(22)=0
-!        igdstmpl(14)=48     ! Resolution and component flags (Table 3.3) 
+!        igdstmpl(14)=48     ! Resolution and component flags (Table 3.3)
 !        igdstmpl(15)=latlst ! La2 - latitude of last grid point
-!        igdstmpl(16)=lonlst ! Lo2 - longitude of last grid point 
+!        igdstmpl(16)=lonlst ! Lo2 - longitude of last grid point
 !        igdstmpl(17)=dxval  ! Di - i direction increment
 !        igdstmpl(18)=ny/2   ! N - number of paralells between a pole and the equator
 !        igdstmpl(19)=0      ! Scanning mode (Table 3.4) (0:Points in the first row or column scan in the +i (+x) direction)
-      endif 
+      endif
 !
       idefnum=1             ! Used if igds(3) .ne. 0. The number of entries in array ideflist
       ideflist=0            ! Used if igds(3) .ne. 0. number of grid points contained in each row ( or column ), Dummy array otherwise
@@ -124,13 +124,13 @@
 !
 !-- section 4: product definition section
       ipdstmpl=0
-      ipdsnum=0             ! Product Definition Template Number (Table 4.0) (0: Analysis or forecast at a horizontal level or in a horizontal layer at a point in time) 
+      ipdsnum=0             ! Product Definition Template Number (Table 4.0) (0: Analysis or forecast at a horizontal level or in a horizontal layer at a point in time)
       ipdstmpllen=29        ! pdt template length
       ipdstmpl(1)=13        ! catogory
       ipdstmpl(2)=193       ! parameter
       ipdstmpl(3)=2         ! Type of generating process (Table 4.3) (0:ana, 1:ic, 2:fcst)
-      ipdstmpl(4)=0         ! Background generating process identifier 
-      ipdstmpl(5)=211        ! Analysis or forecast generating process identified (ON388TableA) 
+      ipdstmpl(4)=0         ! Background generating process identifier
+      ipdstmpl(5)=211        ! Analysis or forecast generating process identified (ON388TableA)
       ipdstmpl(6)=0         ! Hours of observational data cutoff after reference time
       ipdstmpl(7)=0         ! Minutes of observational data cutoff after reference time
       ipdstmpl(8)=1         ! Indicator of unit of time range (Table 4.4) (0:minute, 1:hour 2:day)
@@ -142,22 +142,22 @@
       ipdstmpl(14)=0        ! Scale factor of second fixed surface
       ipdstmpl(15)=0        ! Scaled value of second fixed surface
 !      ipdstmpl(16)=0        !  Year
-!      ipdstmpl(17)=0        !  Month 
+!      ipdstmpl(17)=0        !  Month
 !      ipdstmpl(18)=0        !  Date
 !      ipdstmpl(19)=0        !  Forecast hour
-      ipdstmpl(20)=0        !  
-      ipdstmpl(21)=0        !  
-      ipdstmpl(22)=1        !  
-      ipdstmpl(23)=0        !  
-      ipdstmpl(24)=0        !  
-      ipdstmpl(25)=2        !  
-      ipdstmpl(26)=1        !  
-      ipdstmpl(27)=1        !  
-      ipdstmpl(28)=255      !  
-      ipdstmpl(29)=0        !  
+      ipdstmpl(20)=0        !
+      ipdstmpl(21)=0        !
+      ipdstmpl(22)=1        !
+      ipdstmpl(23)=0        !
+      ipdstmpl(24)=0        !
+      ipdstmpl(25)=2        !
+      ipdstmpl(26)=1        !
+      ipdstmpl(27)=1        !
+      ipdstmpl(28)=255      !
+      ipdstmpl(29)=0        !
 
 !
-      numcoord=0            ! Number of coordinate values after template 
+      numcoord=0            ! Number of coordinate values after template
       coordlist=0.          ! Optional list of coordinate values
 !
 !-- section 5: Data Representation Section
@@ -171,18 +171,18 @@
       idrstmpl(6)=1         !
       idrstmpl(7)=0         ! Missing value management used (see Code Table 5.5)
       idrstmpl(8)=0         ! Primary missing value substitute
-      idrstmpl(9)=0         ! Secondary missing value substitute 
-      idrstmpl(10)=9047     ! 
-      idrstmpl(11)=0        ! 
-      idrstmpl(12)=5        ! 
-      idrstmpl(13)=1        ! 
-      idrstmpl(14)=1        ! 
-      idrstmpl(15)=12       ! 
-      idrstmpl(16)=5        ! 
-      idrstmpl(17)=2    
-      idrstmpl(18)=2     
+      idrstmpl(9)=0         ! Secondary missing value substitute
+      idrstmpl(10)=9047     !
+      idrstmpl(11)=0        !
+      idrstmpl(12)=5        !
+      idrstmpl(13)=1        !
+      idrstmpl(14)=1        !
+      idrstmpl(15)=12       !
+      idrstmpl(16)=5        !
+      idrstmpl(17)=2
+      idrstmpl(18)=2
 !
-!-- section 6:       
+!-- section 6:
       ibmap=255             ! Bit-map indicator (Table 6.0) (0:A bit map applies, 255:A bit map does not apply)
 !
 !-- test data
@@ -224,7 +224,7 @@
 !      ipdstmpl(1)=2         ! catogory (Momentum:2)
 !      ipdstmpl(2)=2         ! parameter (ugrd:2)
 !!
-!      idrstmpl(3)=4         ! decimal scale 
+!      idrstmpl(3)=4         ! decimal scale
 !      idrstmpl(4)=14        ! Decimal scale factor
 !      call addfield(cgrib,max_bytes,ipdsnum,ipdstmpl,ipdstmpllen, &
 !                          coordlist,numcoord,idrsnum,idrstmpl, &
@@ -238,7 +238,7 @@
 !      ipdstmpl(1)=2         ! catogory (Momentum:2)
 !      ipdstmpl(2)=3         ! parameter (vgrd:3)
 !!
-!      idrstmpl(3)=4         ! decimal scale 
+!      idrstmpl(3)=4         ! decimal scale
 !      idrstmpl(4)=14        ! Decimal scale factor
 !      call addfield(cgrib,max_bytes,ipdsnum,ipdstmpl,ipdstmpllen, &
 !                          coordlist,numcoord,idrsnum,idrstmpl, &
@@ -250,4 +250,3 @@
 !
       return
       end
-

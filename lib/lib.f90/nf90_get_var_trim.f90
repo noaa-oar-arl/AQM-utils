@@ -28,15 +28,15 @@ function getvar_scalar_trim (ncid, varid, values, start, count, stride, map) &
    result (status)
    use netcdf
    implicit none
-  
+
    integer,           intent (in ) :: ncid, varid
    character(*),      intent (out) :: values
    integer, optional, intent (in ) :: start(:), count(:), stride(:), map(:)
    integer                         :: status
-   
+
    status = nf90_get_var (ncid, varid, values, start, count, stride, map)
    if (status /= nf90_noerr) return	! return any error status to caller
-   
+
    call fix_trailing_nulls (values, 1)
 
 end function getvar_scalar_trim
@@ -47,15 +47,15 @@ function getvar_1d_trim (ncid, varid, values, start, count, stride, map) &
    result (status)
    use netcdf
    implicit none
-  
+
    integer,           intent (in ) :: ncid, varid
    character(*),      intent (out) :: values(:)
    integer, optional, intent (in ) :: start(:), count(:), stride(:), map(:)
    integer                         :: status
-   
+
    status = nf90_get_var (ncid, varid, values, start, count, stride, map)
    if (status /= nf90_noerr) return
-   
+
    call fix_trailing_nulls (values, size (values))
 
 end function getvar_1d_trim
@@ -66,15 +66,15 @@ function getvar_2d_trim (ncid, varid, values, start, count, stride, map) &
    result (status)
    use netcdf
    implicit none
-  
+
    integer,           intent (in ) :: ncid, varid
    character(*),      intent (out) :: values(:,:)
    integer, optional, intent (in ) :: start(:), count(:), stride(:), map(:)
    integer                         :: status
-   
+
    status = nf90_get_var (ncid, varid, values, start, count, stride, map)
    if (status /= nf90_noerr) return
-   
+
    call fix_trailing_nulls (values, size (values))
 
 end function getvar_2d_trim
@@ -85,15 +85,15 @@ function getvar_3d_trim (ncid, varid, values, start, count, stride, map) &
    result (status)
    use netcdf
    implicit none
-  
+
    integer,           intent (in ) :: ncid, varid
    character(*),      intent (out) :: values(:,:,:)
    integer, optional, intent (in ) :: start(:), count(:), stride(:), map(:)
    integer                         :: status
-   
+
    status = nf90_get_var (ncid, varid, values, start, count, stride, map)
    if (status /= nf90_noerr) return
-   
+
    call fix_trailing_nulls (values, size (values))
 
 end function getvar_3d_trim
@@ -104,15 +104,15 @@ function getvar_4d_trim (ncid, varid, values, start, count, stride, map) &
    result (status)
    use netcdf
    implicit none
-  
+
    integer,           intent (in ) :: ncid, varid
    character(*),      intent (out) :: values(:,:,:,:)
    integer, optional, intent (in ) :: start(:), count(:), stride(:), map(:)
    integer                         :: status
-   
+
    status = nf90_get_var (ncid, varid, values, start, count, stride, map)
    if (status /= nf90_noerr) return
-   
+
    call fix_trailing_nulls (values, size (values))
 
 end function getvar_4d_trim
@@ -123,15 +123,15 @@ function getvar_5d_trim (ncid, varid, values, start, count, stride, map) &
    result (status)
    use netcdf
    implicit none
-  
+
    integer,           intent (in ) :: ncid, varid
    character(*),      intent (out) :: values(:,:,:,:,:)
    integer, optional, intent (in ) :: start(:), count(:), stride(:), map(:)
    integer                         :: status
-   
+
    status = nf90_get_var (ncid, varid, values, start, count, stride, map)
    if (status /= nf90_noerr) return
-   
+
    call fix_trailing_nulls (values, size (values))
 
 end function getvar_5d_trim
@@ -154,9 +154,9 @@ subroutine fix_trailing_nulls (strs, nstrings)
 
    character(*), intent (inout) :: strs(*)
    integer,      intent (in   ) :: nstrings
-   
+
    integer i, j				     ! local vars
-   
+
    do i = 1, nstrings			     ! process each string individually
       do j = len_trim (strs(i)), 1, -1	     ! len_trim optimizes commom cases
          if (strs(i)(j:j) == ' ') cycle	     ! skip intermixed blanks

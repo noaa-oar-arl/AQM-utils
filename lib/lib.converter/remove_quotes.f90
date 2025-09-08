@@ -20,7 +20,7 @@
 ! output, as well as retaining possible trailing blanks.
 !
 ! valid_quote_chars specifies one or more non-blank characters
-! to accept as valid quote characters.  
+! to accept as valid quote characters.
 !
 ! On any quoting problem, the original string and length are
 ! returned without modification.
@@ -39,7 +39,7 @@ subroutine remove_quotes (string, strlen, valid_quote_chars)
    character(*), intent (inout) :: string
    integer,      intent (inout) :: strlen
    character(*), intent (in)    :: valid_quote_chars
-   
+
    character qchar*1
    integer q1, q2, oldlen
 
@@ -59,11 +59,11 @@ subroutine remove_quotes (string, strlen, valid_quote_chars)
    q1 = index (string(1:q2-1), qchar)	! find first quote char
 
    if (q1 == 0) return			! missing first quote, no change
-   
+
    if (q1 > 1) then
       if (string(1:q1-1) /= ' ') return  ! does not start with quote, no change
    end if
-   
+
    if (q2 - q1 > 1) then		! if one or more chars inside quotes...
       if (index (string(q1+1:q2-1), qchar) > 0) return
    end if				! third quote is invalid, no change

@@ -32,3 +32,10 @@ packages = ["gefsaero_grib_to_cube"]
 
 [tool.pytest]
 testpaths = ["tests"]
+
+[tool.black]
+line-length = 132
+
+[tool.isort]
+line_length = 132
+profile = "black"
