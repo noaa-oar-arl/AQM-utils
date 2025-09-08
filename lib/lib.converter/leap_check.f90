@@ -50,7 +50,7 @@
 !		http://www.geocities.com/CapeCanaveral/Lab/7671/gregory.htm
 !
 !		Other useful website references:
-!		
+!
 !		http://www.merlyn.demon.co.uk/leapyear.htm
 !		http://www.merlyn.demon.co.uk/miscdate.htm
 !		http://www.Crowl.org/Lawrence/time/britgreg.html
@@ -60,7 +60,7 @@
 !---------------------------------------------------------------------------
 
 logical function leap_check (year)
-	
+
    integer year
 
 ! Range check is disabled because it interferes with caller's error handling.
@@ -68,22 +68,22 @@ logical function leap_check (year)
 !   if (year.lt.1753) then	! if this traps, it is a bad bad thing.
 !      print !,'!!! leap_check v1.01, FATAL: invalid before 1753,', &
 !         ' year =', year
-!      stop 
+!      stop
 !   end if
-   
+
    if (mod(year,4).ne.0) then
       leap_check = .false.		! not divisible by 4
-   
+
    else if (mod(year,100).ne.0) then
       leap_check = .true.		! divisible by 4, unless
-      
+
    else if (mod(year,400).ne.0) then
       leap_check = .false.		! divisible by 100, unless
-      
+
    else
       leap_check = .true.		! divisible by 400
    end if
-   
+
    return
 
 end function leap_check

@@ -9,7 +9,7 @@ list(APPEND SRC_CLIB
     ${CLIB}/config.f90
     ${CLIB}/stdlit.f90
     ${CLIB}/string_utils.f90
-    ${CLIB}/date_utils.f90    
+    ${CLIB}/date_utils.f90
     ${CLIB}/expand_filename.f90
     ${CLIB}/shell-sort.f90
     ${CLIB}/netwrite3.no-udunits.f90
@@ -36,7 +36,7 @@ if(CMAKE_Fortran_COMPILER_ID MATCHES "^(Intel)$")
   set(CMAKE_Fortran_FLAGS
       "-g -traceback -fp-model source -free -convert big_endian")
   set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
-  set(CMAKE_Fortran_FLAGS_DEBUG "-O0")
+  set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -O0")
 elseif(CMAKE_Fortran_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
   set(CMAKE_Fortran_FLAGS
       "-g -fbacktrace -ffree-form -ffree-line-length-none -fconvert=big-endian")

@@ -1,23 +1,23 @@
 !------------------------------------------------------------------------------
-!  aqm_post_maxi_bias_cor_grib2 
+!  aqm_post_maxi_bias_cor_grib2
 !  Author:   Jianping Huang 03/19/2015
 !            based on read__gridded_aqm.f90
 !            Jianping Huang for o3 bias correction 09/03/2017
 !  Purposes: 1) convert Bias Correction files from netcdf format to grib2
-!            2) calculate daily max and daily averaged PM2.5 
+!            2) calculate daily max and daily averaged PM2.5
 !            3) calculate daily 8hr_ave max PM2.5
 !
 !  Ho-Chun Huang     Oct 23 2019   eplace hardwire day2 to total_day
-!  Ho-Chun Huang     NOV 26 2019   Update ipdstmpl(19) to be consistent with raw model for 
+!  Ho-Chun Huang     NOV 26 2019   Update ipdstmpl(19) to be consistent with raw model for
 !                                  max_1hr_o3 and max_8hr_o3
 !  Jianping Huang and Kai Wang   11/22/2022   support AQMv7.0 (ufs-aqm) implementation
 !------------------------------------------------------------------------------
-program aqm_post_maxi_bias_cor_grib2_793 
+program aqm_post_maxi_bias_cor_grib2_1144
 
    use config, only : dp
    use read__netcdf_var
    use stdlit, only : normal
-   use index_to_date_mod        
+   use index_to_date_mod
    use date__index
    use next__time
 
@@ -26,12 +26,12 @@ program aqm_post_maxi_bias_cor_grib2_793
    						!   fail (stdlit)
 ! Local variables.
 
-   character outfile*200,grib_id*3
+   character outfile*200,grib_id*4
    integer nhours,nhours8, nt,nowtime8,total_day
    integer dims_in4(3), dims_in3(3)
 !   logical fail1, fail2
 
-! added by JP  
+! added by JP
    character  infile1*200,infile2*200,infile3*200
    character  varname*10,ymd*8,ch_cyc*2,ch_chk*2
    character  ch_chk1*2
@@ -40,12 +40,12 @@ program aqm_post_maxi_bias_cor_grib2_793
    integer    nowdate,nowtime
    integer    nowdate9,nowtime9,iyear9,imonth9,iday9
    integer    ierr,mday,ier
-   integer    i, j 
+   integer    i, j
 ! for grib2 by JP
 !   integer, parameter   :: max_bytes=20000000
-   integer, parameter   :: nx=775,ny=488
+   integer, parameter   :: nx=1128,ny=698
    integer, parameter   :: max_bytes=nx*ny*4
-   integer, parameter   :: markutc=05 
+   integer, parameter   :: markutc=05
    integer, parameter   :: ncmaq=4
 !
    integer listsec0(2)
@@ -72,7 +72,7 @@ program aqm_post_maxi_bias_cor_grib2_793
 !
    real(4),dimension(nx*ny) :: fld1
    real(4),dimension(nx*ny) :: fld2
-   logical*1,dimension(nx*ny) :: bmap1 
+   logical*1,dimension(nx*ny) :: bmap1
 
    integer ifilw1,ifilw2,lengrib,lonstt,lonlst,latstt,latlst
 !    integer yy,mm,dd,hh,mn,sc
@@ -83,7 +83,7 @@ program aqm_post_maxi_bias_cor_grib2_793
 !-------------------------------------------------------------------
 
    integer status
-   
+
    character(*), parameter :: calendar  = 'gregorian'
 
    logical  ave1hr
@@ -193,7 +193,7 @@ program aqm_post_maxi_bias_cor_grib2_793
    infile1="a.nc"
    infile2="b.nc"
    infile3="c.nc"
- 
+
    call read_netcdf_var (infile1, varname, diag, indata1, status)
 
    if ( icyc .eq. 6 ) then
@@ -203,7 +203,7 @@ program aqm_post_maxi_bias_cor_grib2_793
       call read_netcdf_var (infile2, varname, diag, indata2, status)
       call read_netcdf_var (infile3, varname, diag, indata3, status)
    endif
-    
+
 
 ! Read errors are soft errors.
 ! On read error, return with fail status from lower level.
@@ -228,7 +228,7 @@ program aqm_post_maxi_bias_cor_grib2_793
 ! Round from double to single precision, using default rounding mode.
 
    nhours  = size (indata1, 3)
-   
+
    nhours8 = nhours - 7
 
    allocate (bc_data(imax,jmax))
@@ -255,8 +255,8 @@ program aqm_post_maxi_bias_cor_grib2_793
                   bc_op(i,j,1:2)  = indata2(i,j,17:18) ! using previous day 12z file
                endif
                bc_op(i,j,3:nhours) = indata1(i,j,1:46)   ! n_bias_cor_day *24 - 2
-            enddo  
-         enddo 
+            enddo
+         enddo
       else
          do i = 1, imax
             do j = 1, jmax
@@ -266,8 +266,8 @@ program aqm_post_maxi_bias_cor_grib2_793
                   bc_op(i,j,1:2)  = indata2(i,j,17:18) ! using previous day 12z file
                endif
                bc_op(i,j,3:nhours) = indata1(i,j,1:70)   ! n_bias_cor_day *24 - 2
-            enddo  
-        enddo 
+            enddo
+        enddo
      end if
    elseif ( icyc .eq. 12 ) then
       if ( max_proc .eq. 48 ) then
@@ -310,7 +310,7 @@ program aqm_post_maxi_bias_cor_grib2_793
 !-- set file unit
 
    ifilw1=51
-   write(grib_id,'(i3.3)')id_gribdomain
+   write(grib_id,'(i4.4)')id_gribdomain
    call baopen(ifilw1,trim(outfile)//'.'//grib_id//&
              '.grib2',ierr)
    if(ierr.ne.0) then
@@ -337,9 +337,9 @@ program aqm_post_maxi_bias_cor_grib2_793
    listsec1(7)=imonth    ! Reference time - Month
    listsec1(8)=iday      ! Reference time - Day
    listsec1(9)=icyc      ! Reference time - Hour
-     
+
    total_day=nhours/24
-   do mday = 1, total_day 
+   do mday = 1, total_day
 !     if ( varlist(1) .eq. 'O3_8h_max' ) then
 !       do i = 1, imax
 !        do j = 1, jmax
@@ -368,21 +368,10 @@ program aqm_post_maxi_bias_cor_grib2_793
       nowtime=(ihour+1)*10000
 !      do nt=1,nhours
 
-      GRID=793
-      if(GRID.eq.148) then   !For HRRR grid
-         im=442
-         jm=265
-         jf=im*jm
-      elseif (GRID.eq.793) then
-         im=775
-         jm=488
-         jf=im*jm
-      else
-         call makgds(GRID, kgdss, gdss, lengds, ier)
-         im=kgdss(2)
-         jm=kgdss(3)
-         jf=kgdss(2)*kgdss(3)
-      end if
+      GRID=1144
+      im=1128
+      jm=698
+      jf=im*jm
 !
       cgrib1=''
       cgrib2=''
@@ -561,16 +550,16 @@ program aqm_post_maxi_bias_cor_grib2_793
             do j=1,ny
                do i=1,nx
 !                  fld1(i+(j-1)*nx)=o3_1h_max(i,j,mday) *1.  ! ppmv -> ppbv
-                  fld1(i+(j-1)*nx)=o3_1h_max(i,j,mday) 
+                  fld1(i+(j-1)*nx)=o3_1h_max(i,j,mday)
                enddo
             enddo
-         endif 
+         endif
 
          if ( varlist(L) .eq. 'O3_8h_max' ) then
             do j=1,ny
                do i=1,nx
 !                  fld1(i+(j-1)*nx)=o3_8h_max(i,j,mday) *1000.  ! ppmv -> ppbv
-                  fld1(i+(j-1)*nx)=o3_8h_max(i,j,mday) 
+                  fld1(i+(j-1)*nx)=o3_8h_max(i,j,mday)
                enddo
             enddo
          endif
@@ -578,7 +567,7 @@ program aqm_post_maxi_bias_cor_grib2_793
          if ( varlist(L) .eq. 'pm25_24h_ave' ) then
             do j=1,ny
                do i=1,nx
-                 fld1(i+(j-1)*nx)=pm25_24h_ave(i,j,mday) 
+                 fld1(i+(j-1)*nx)=pm25_24h_ave(i,j,mday)
                enddo
             enddo
          endif
@@ -606,7 +595,7 @@ program aqm_post_maxi_bias_cor_grib2_793
             ipdstmpl(27)=gipds27(indexcmaq(L))
          endif
 
-         ipdstmpl(24)=0       ! 
+         ipdstmpl(24)=0       !
          if ( varlist(L).eq.'O3_8h_max') then
         !! Ho-Chun Huang nowtime8=11-icyc+(mday-1)*24 !! update from GIT code to match current PROD time range
         !! Ho-Chun Huang nowtime8=12-icyc+(mday-1)*24 !! change to be consistent to raw post from GIT
@@ -691,7 +680,7 @@ program aqm_post_maxi_bias_cor_grib2_793
 
          call wryte(ifilw1, lengrib, cgrib1)
 
-      end do  ! L loop %Varlist% 
+      end do  ! L loop %Varlist%
 
       nowdate=date_index(iyear, imonth, iday, base_year, calendar)
 
@@ -699,14 +688,14 @@ program aqm_post_maxi_bias_cor_grib2_793
 
       call next_time(nowdate,nowtime,240000)
       call index_to_date(nowdate,iyear, imonth, iday, base_year, calendar)
-    
+
       print*,"hjp992,iday=",iday
 
    end do   ! mday loop
-     
-   print*,"it is done ! jphuang" 
-         
-end program aqm_post_maxi_bias_cor_grib2_793
+
+   print*,"it is done ! jphuang"
+
+end program aqm_post_maxi_bias_cor_grib2_1144
 
 !-----------------------------------------------------------------------
        subroutine g2getbits(ibm,scl,len,bmap,g,ibs,ids,nbits)

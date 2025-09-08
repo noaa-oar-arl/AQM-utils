@@ -20,7 +20,7 @@ logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger("stack-pt-merge")
 log.setLevel(logging.WARNING)
 
-REF_YEAR = 2016
+REF_YEAR_DEFAULT = 2016
 
 POINT_DIM_NAME = "nlocs"
 
@@ -106,17 +106,15 @@ class Date:
         if isinstance(dt, str):
             dt_ = dt.replace("-", "").replace("_", "").strip()
             if len(dt_) == 8:
-                fmt = f"%Y%m%d"
+                fmt = "%Y%m%d"
             elif len(dt_) == 10:
-                fmt = f"%Y%m%d%H"
+                fmt = "%Y%m%d%H"
             else:
                 raise ValueError(f"{dt!r} has unsupported datetime format. Use YYYYMMDD[HH].")
             try:
                 dt_ = datetime.strptime(dt_, fmt)
             except ValueError as e:
-                raise ValueError(
-                    f"{dt_!r} (from input {dt!r}) failed to parse as a {fmt} datetime"
-                ) from e
+                raise ValueError(f"{dt_!r} (from input {dt!r}) failed to parse as a {fmt} datetime") from e
         else:
             dt_ = dt
 
@@ -205,7 +203,7 @@ class Date:
 class SectorFiles:
     """Mapping of Date to Paths for a given sector directory."""
 
-    _ref_year = REF_YEAR
+    _ref_year = REF_YEAR_DEFAULT
     """Year in the emissions data."""
 
     def __init__(self, directory, sector):
@@ -260,9 +258,7 @@ class SectorFiles:
             # TODO: check that the one we are dropping here is indeed one of those two?
 
             s_dates = "\n".join(f"- {d}" for d in dates_m_nh)
-            log.warning(
-                f"dropping the last of these non-holiday dates in order to have 4 only:\n{s_dates}"
-            )
+            log.warning(f"dropping the last of these non-holiday dates in order to have 4 only:\n{s_dates}")
             dates_m_nh = dates_m_nh[:-1]
             fps_m_nh = fps_m_nh[:-1]
 
@@ -274,7 +270,7 @@ class SectorFiles:
 
         d_r = fp_r = None  # `r` for reference
         if target.is_holiday:
-            log.debug(f"target is a holiday")
+            log.debug("target is a holiday")
             desired_md = HOLIDAY_MD[self._ref_year][target._iholiday]
             d = Date(f"{self._ref_year}{desired_md}")
             if d in self.fps:
@@ -310,7 +306,7 @@ class SectorFiles:
                 fp_r = fps_m[i]
 
         else:
-            log.debug(f"target is *not* a holiday")
+            log.debug("target is *not* a holiday")
             # If target is not a holiday, we don't want to match to a holiday
             if len(dates_m_nh) > 25:
                 # Assume daily
@@ -332,9 +328,7 @@ class SectorFiles:
                     iwds_r = [dates_m_nh[i].dow for i in inds]
                     if iwd_t in iwds_r:
                         best = iws_rel_r.index(iw_rel) + iwds_r.index(iwd_t)
-                        log.debug(
-                            f"match: ind={best}, iw_r={iws_r[best]}, iw_rel_r={iws_rel_r[best]}"
-                        )
+                        log.debug(f"match: ind={best}, iw_r={iws_r[best]}, iw_rel_r={iws_rel_r[best]}")
                         break
                 else:
                     raise Exception(f"Failed to find good match for {target}.")
@@ -361,12 +355,8 @@ class SectorFiles:
                 fp_r = fps_m_nh[i]
 
             else:
-                s_fps = "\n".join(
-                    f"- {date} {fp.as_posix()}" for date, fp in zip(dates_m_nh, fps_m_nh)
-                )
-                raise Exception(
-                    f"Unexpected len-{len(fps_m_nh)} file set for target {target}:\n{s_fps}"
-                )
+                s_fps = "\n".join(f"- {date} {fp.as_posix()}" for date, fp in zip(dates_m_nh, fps_m_nh))
+                raise Exception(f"Unexpected len-{len(fps_m_nh)} file set for target {target}:\n{s_fps}")
 
         assert d_r is not None and fp_r is not None
 
@@ -392,10 +382,11 @@ def main(
     date_str,
     *,
     nstep=NSTEP_DEFAULT,
+    ref_year=REF_YEAR_DEFAULT,
+    input_dir=INPUT_DIR_DEFAULT,
+    stack_groups_only=False,
     logger_info=False,
     logger_debug=False,
-    stack_groups_only=False,
-    input_dir=INPUT_DIR_DEFAULT,
 ):
     # Adjust logger settings
     if logger_info:
@@ -408,12 +399,13 @@ def main(
     ndays = date_final.dt.toordinal() - date_start.dt.toordinal() + 1
     pre = "pt" if not stack_groups_only else "sg"
     ofn = f"{pre}-{str(date_start).replace('-', '').replace('_', '')}.nc"
+    SectorFiles._ref_year = ref_year
 
     print_heading("Info")
     print(f"Start time: {date_start}")
     print(f"Number of hourly time steps desired: {nstep} -> {ndays} unique day(s)")
     print(f"Final time: {date_final}")
-    print(f"Using {REF_YEAR} point emissions data")
+    print(f"Using {ref_year} point emissions data")
     print(f"Output filename: {ofn}")
     print(f"Input directory: {input_dir.resolve(strict=True).as_posix()}")
 
@@ -556,8 +548,7 @@ def main(
                     v_out = ds_out.createVariable(vn, "S1", (POINT_DIM_NAME, "nchar"))
                     v_out.long_name = "Group ID"
                     v_out.description = (
-                        "Sector time group (daily, 4-per-month, or 4-per-month + holidays) "
-                        "and reference year date"
+                        "Sector time group (daily, 4-per-month, or 4-per-month + holidays) " "and reference year date"
                     )
                     v_out[:] = ""
                 else:
@@ -640,10 +631,7 @@ def parse_args(args=None):
         "--nstep",
         type=int,
         default=NSTEP_DEFAULT,
-        help=(
-            "Desired number of time steps for the output file (including start). "
-            f"(default: {NSTEP_DEFAULT})"
-        ),
+        help=("Desired number of time steps for the output file (including start). " f"(default: {NSTEP_DEFAULT})"),
     )
     parser.add_argument(
         "-i",
@@ -654,6 +642,13 @@ def parse_args(args=None):
             "Directory where the compiled sector group files are located. "
             f"(default: {INPUT_DIR_DEFAULT.as_posix()} (GMU Hopper))"
         ),
+    )
+    parser.add_argument(
+        "-r",
+        "--reference-year",
+        type=int,
+        default=REF_YEAR_DEFAULT,
+        help=f"Emissions data year, e.g. 2016 or 2019. (default: {REF_YEAR_DEFAULT})",
     )
     parser.add_argument(
         "--stack-groups-only",
@@ -677,6 +672,7 @@ def parse_args(args=None):
     kwargs = {
         "date_str": args.start,
         "nstep": args.nstep,
+        "ref_year": args.reference_year,
         "input_dir": args.input_dir,
         "stack_groups_only": args.stack_groups_only,
         "logger_info": args.info,

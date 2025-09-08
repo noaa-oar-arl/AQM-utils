@@ -48,6 +48,7 @@
 #
 # 2023-mar-27	Add print_omp_info.f90 with conditional $F90_OMP_STUBS.
 # 2023-apr-04	Add read_obs_series_netcdf.f90, etc. for AirNow Netcdf support.
+# 2023-sep-28	Add infill.f90.
 #
 # This make file uses a single large compile command, rather
 # than incremental compiles.  Environment variables are used to
@@ -91,7 +92,8 @@ Lib1 =		$(Lib)/config.f90		$(Lib)/stdlit.f90 \
 Lib2 =		$(Lib)/binomial_coefficient.f90	$(Lib)/date_utils.f90 \
 		$(Lib)/distance_btw_coords.f90	$(Lib)/expand_filename.f90 \
 		$(Lib)/find_runs.f90		$(Lib)/get_free_unit.f90 \
-		$(Lib)/get_param_module.f90	$(Lib)/message_nolog.f90 \
+		$(Lib)/get_param_module.f90 \
+		$(Lib)/infill.f90		$(Lib)/message_nolog.f90 \
 		$(Lib)/multisets.f90		$(Lib)/netcdf_sup.f90 \
 		$(Lib)/netwrite3.no-udunits.f90	$(OMP_STUBS) \
 		$(Lib)/print_omp_info.f90	$(Lib)/read_line.f90 \

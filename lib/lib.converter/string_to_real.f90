@@ -32,25 +32,25 @@
 !---------------------------------------------------------------------------
 
 subroutine string_to_real (string, val, val_status)
-	
+
    use stdlit
-   
+
    implicit none				! args
    character string*(*)
    logical val_status
    real val
-   
+
    integer i, strlen, ios			! local vars
    logical dp_flag
-   
+
    val_status = .false.				! assume reject until proven
 
    strlen = len_trim (string)
    if (strlen == 0) return			! reject a null string
    if (strlen > 50) return			! reject a string too long
-   
+
    dp_flag = .false.
-   
+
    do i = 1, strlen				! scan string for non-digits
       if (string(i:i) == '.') then
          if (dp_flag) return			! reject second decimal point
@@ -59,7 +59,7 @@ subroutine string_to_real (string, val, val_status)
          if (index ('0123456789-', string(i:i), forward) == 0) return
       end if					! reject non-digit
    end do
-   
+
    read (string, *, iostat=ios) val		! convert string to real
    if (ios == 0) val_status = .true.		! good number, return normal
 						! else ios /= 0: error return

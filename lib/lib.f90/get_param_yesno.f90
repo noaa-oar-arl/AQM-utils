@@ -32,7 +32,7 @@
 !		line read from the file.  The general format of the
 !		parameter line is:
 !
-!		    label = value 
+!		    label = value
 !
 !		Leading and trailing spaces are allowed around these
 !		elements.  However, embedded spaces in the label must
@@ -45,15 +45,15 @@
 !---------------------------------------------------------------------------
 
 subroutine get_param_yesno (label, flag, filenum, status, line_num)
-	
+
 	use stdlit
-	
+
 	character label*(*)
 	integer filenum, status, line_num
 	logical flag
-	
+
 	character string*3
-		
+
 	call get_param_string (label, string, filenum, status, line_num)
 
 	if (status /= normal) goto 999	! abort if eof, unrecognized,
@@ -70,5 +70,5 @@ subroutine get_param_yesno (label, flag, filenum, status, line_num)
 	end if
 
 999	return			! normal or error exit, come here with status
-	
+
 end subroutine get_param_yesno

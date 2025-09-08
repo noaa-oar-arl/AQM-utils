@@ -34,7 +34,7 @@ contains
 
 subroutine resolve_env (string)
    implicit none
-   
+
    character(*), intent (inout) :: string	! string with $var's;
    						! overwritten with result string
 
@@ -52,7 +52,7 @@ subroutine resolve_env (string)
    remain = len_trim (string)			! start at full non-blank length
    						!   of input string
    outlen = len (string)			! get available string length
-   
+
    base = 1				! set base pointer to start of string
 
 ! *** QUICK FIX -- RESOLVE ONLY A SINGLE LEADING ENVIRONMENT VARIABLE ***
@@ -60,11 +60,11 @@ subroutine resolve_env (string)
 ! E.G.   $varname/xxx     RESOLVES TO     value/xxx
 
    p2 = index (string, '/')			! find first slash in string
-   
+
    if (p2 == 0) p2 = len_trim (string) + 1	! handle no trailing slash
-   
+
    if (string(1:1) /= '$' .or. p2 < 3) return	! skip if no leading env var
-   
+
    varname = string(2:p2-1)		! extract varname from "$varname/"
    call getenv (trim (varname), value)	! get value for this env var
 
@@ -76,7 +76,7 @@ subroutine resolve_env (string)
       temp = string(p2:)		! get slash plus remainder of string
       string = value			! insert substitution at beginning
       string(len2+1:) = temp		! insert remainder including slash
-   end if				
+   end if
 
 ! If substitution NOT made, then the original string is left intact.
 

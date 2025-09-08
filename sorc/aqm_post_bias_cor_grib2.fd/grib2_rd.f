@@ -29,7 +29,7 @@
 !-- Open GRIB2 file
       call baopenr(ifile,trim(cin),iret)
       print *,'cin=',trim(cin),'iret=',iret
-      
+
 ! Set GRIB2 field identification values to search for
       j=0              ! search from 0
       jdisc=0          ! for met field:0 hydro: 1, land: 2
@@ -44,8 +44,8 @@
       jpdt(1)=2      ! table 4.1
       jpdt(2)=3      ! table 4.2-0-0
       jpdt(10)=100   ! table 4.5
-      jpdt(11)=0   
-      jpdt(12)=50000   
+      jpdt(11)=0
+      jpdt(12)=50000
 !
 !-- set grid def template
       jgdtn=-1
@@ -76,7 +76,7 @@
 ! other pds info is in gfld%ipdtmpl
       fhour=gfld%ipdtmpl(9)
       print *,'pdstempl_num=',pdstempl_num,'ipdtmpl=',gfld%ipdtmpl
-      
+
 
 !
 !gds info

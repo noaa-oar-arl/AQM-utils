@@ -9,7 +9,7 @@
 !			Change module name to underscore convention.
 ! 1.02	2014-mar-06	Add support for double precision.
 !
-! ****	2014-mar-24	shell-sort.bc.f90:	
+! ****	2014-mar-24	shell-sort.bc.f90:
 !			Special version for bias correction.
 !			Match undocumented Matlab 8.3 behavior of "sort"
 !			  function, "descend" mode, for comparison testing.

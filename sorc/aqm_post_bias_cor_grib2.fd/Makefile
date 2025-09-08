@@ -18,7 +18,7 @@
 #
 #---------------------------------------------------------------------------
 
-Prg      =  aqm_post_bias_cor_grib2_793
+Prg      =  aqm_post_bias_cor_grib2_1144
 
 # Library directories.
 
@@ -27,13 +27,15 @@ Lib    =   ../../lib/sorc/lib.f90
 
 
 # Command argument sequences.
-LIB_NETCDF = -I$(NETCDF)/include ${NETCDF_LDFLAGS}
+NETCDF_LDFLAGS = -L${NETCDF}/lib -lnetcdf -lnetcdff
+LIB_NETCDF = -I${NETCDF}/include $(NETCDF_LDFLAGS)
 
-#F90_CMD   = ftn 
-F90_CMD   = ftn #ifort 
+
+#F90_CMD   = ftn
+F90_CMD   = ftn #ifort
 
 F90_FLAGS4 = -O3
-#F90_FLAGS5 = 
+#F90_FLAGS5 =
 
 F90_FLAGS  = $(F90_FLAGS1) $(F90_FLAGS2)  \
              $(F90_FLAGS3) $(F90_FLAGS4)  \
@@ -53,24 +55,25 @@ Lib1 =		$(Lib)/config.f90 \
 
 Lib2 =		$(Lib)/date_utils.f90		$(Lib)/get_free_unit.f90 \
 		$(Lib)/get_param_module.f90	$(Lib)/message_nolog.f90 \
-		$(Lib)/netwrite3.no-udunits.f90	$(Lib)/read_line.f90 
-	
+		$(Lib)/netwrite3.no-udunits.f90	$(Lib)/read_line.f90
+
 
 Lib3 =         $(Lib)/next_time.f90
 
-NETCDF_LIB  =  ${NETCDF_LDFLAGS}  ${NETCDF_LDFLAGS_F}
+#NETCDF_LIB  =  $(NETCDF_LDFLAGS)  ${NETCDF_LDFLAGS_F}
+NETCDF_LIB  =  $(NETCDF_LDFLAGS)
 W3_LIB      = ${W3NCO_LIB4} ${W3EMC_LIB4}
-PNG_LIB = /apps/spack/libpng/1.6.37/intel/19.1.3.304/4ohkronuhlyherusoszzrmur5ewvlwzh/lib
 
 Lib4   =  \
           $(NETCDF_LIB) \
           ${G2_LIB4} \
           $(W3_LIB) \
-          -L$(PNG_LIB) -lpng \
+          ${PNG_LIB} \
           ${BACIO_LIB4} \
           ${JASPER_LIB} \
           ${Z_LIB}
 
+#          -L$(PNG_LIB) -lpng \
 Subs.lib =	$(Lib1) $(Lib2) $(Lib3)
 
 # Plib = Shared project support library.
@@ -87,7 +90,7 @@ Subs.plib =	$(Plib)/expand_filename.f90 \
 
 # Main program.
 
-Subs.main =	$(Subs.lib) $(Subs.plib) 
+Subs.main =	$(Subs.lib) $(Subs.plib)
 
 F90_CLEANUP = *.o *.mod *__genmod.f90
 
@@ -104,7 +107,7 @@ $(Prg):	$(Prg).f90 $(Subs.main) $(Hidden) makefile
 clean:
 	@(rm $(F90_CLEANUP) *.o  *.dwarf $(Prg) ; echo) >& /dev/null
 	@(rm -r *.dSYM ; echo) >& /dev/null
-install: 
+install:
 	-cp $(Prg) ../../exec/.
 clobber: clean
 	-rm -f $(Prg)

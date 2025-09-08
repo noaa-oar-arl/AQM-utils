@@ -27,18 +27,18 @@
 subroutine string_to_intu (string, num)
 
    use stdlit
-   
+
    implicit none
    character string*(*)
    integer num
-   
+
    integer ios, i
-	
+
    num = -1				! assume error return until complete
-   
+
    if (len(string).eq.0) return		! reject a null string
    if (len(string).gt.20) return	! reject a string too long
-   
+
    do i = 1, len(string)		! scan string for non-digits
       if (index ('0123456789', string(i:i), forward) == 0) return
    end do

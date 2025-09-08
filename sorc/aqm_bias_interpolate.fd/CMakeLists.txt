@@ -9,7 +9,7 @@ set(PLIB "${LIB_DIR}/lib.probability")
 message("=== AQM library directory: ${LIB_DIR}")
 
 list(APPEND SRC_FLIB1
-    ${FLIB}/config.f90 
+    ${FLIB}/config.f90
     ${FLIB}/stdlit.f90
     ${FLIB}/string_utils.f90
     )
@@ -19,10 +19,10 @@ list(APPEND SRC_FLIB2
     ${FLIB}/distance_btw_coords.f90
     ${FLIB}/expand_filename.f90
     ${FLIB}/get_free_unit.f90
-    ${FLIB}/get_param_module.f90     
+    ${FLIB}/get_param_module.f90
     ${FLIB}/message_nolog.f90
     ${FLIB}/netcdf_sup.f90
-    ${FLIB}/netwrite3.no-udunits.f90 
+    ${FLIB}/netwrite3.no-udunits.f90
     ${FLIB}/read_line.f90
     ${FLIB}/read_netcdf_var.f90
     )
@@ -32,7 +32,7 @@ list(APPEND SRC_BLIB
     ${BLIB}/read_grid_coords.f90
     ${BLIB}/read_gridded_aqm.f90
     ${BLIB}/read_gridded_hourly.f90
-    ${BLIB}/read_gridded_vars.f90   
+    ${BLIB}/read_gridded_vars.f90
     ${BLIB}/read_table_lines.f90
     )
 
@@ -60,7 +60,7 @@ if(CMAKE_Fortran_COMPILER_ID MATCHES "^(Intel)$")
   set(CMAKE_Fortran_FLAGS
       "-g -traceback -fp-model source -free -convert big_endian")
   set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
-  set(CMAKE_Fortran_FLAGS_DEBUG "-O0")
+  set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -O0")
 elseif(CMAKE_Fortran_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
   set(CMAKE_Fortran_FLAGS
       "-g -fbacktrace -ffree-form -ffree-line-length-none -fconvert=big-endian")

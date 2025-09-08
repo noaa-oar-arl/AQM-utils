@@ -1,5 +1,5 @@
 !------------------------------------------------------------------------------
-!  aqm.post1_bias_correct_grib2  
+!  aqm.post1_bias_correct_grib2
 !  Author:   Jianping Huang 01/08/2015
 !            based on read__gridded_aqm.f90
 !  Purposes: 1) convert Bias Correction files from netcdf format to grib1
@@ -7,6 +7,8 @@
 !            3) calculate daily 1-hr max and 24-hr ave PM2.5
 !  11/20/2022 Jianping Huang
 !            modified for post-processing aqm v7.0 (ufs-aqm) hourly output files
+!  08/06/2024 Jianping Huang
+!            modified for post-processing aqm v8.0 (AQM_NA_9m) hourly output files
 !
 !------------------------------------------------------------------------------
       program aqm_post_grib2
@@ -14,9 +16,9 @@
       use config, only : dp
       use read__netcdf_var
       use stdlit, only : normal
-      use index_to_date_mod        
+      use index_to_date_mod
       use date__index
-      use next__time       
+      use next__time
 !   use grib_mod
 
       implicit none
@@ -28,16 +30,16 @@
       integer dims_in4(4), dims_in3(3)
 ! logical fail1, fail2
 
-! added by JP  
+! added by JP
       character  infile*200
       character  varname*10,ymd*8,ch_cyc*2
       integer    diag, imax,jmax
       integer    icyc,iyear,imonth,iday,ihour,base_year,nt
       integer    nowdate,nowtime
       integer    ierr,ier
-! for grib2 
+! for grib2
       integer, parameter   :: max_bytes=20000000
-      integer, parameter   :: nx=775,ny=488
+      integer, parameter   :: nx=1128,ny=698
       integer, parameter   :: ncmaq=3
 !
       integer listsec0(2)
@@ -71,7 +73,7 @@
     integer status
 
     character chtmp*3
-    character grib_id*3
+    character grib_id*4
 
     character(*), parameter :: calendar  = 'gregorian'
     character*16 cmaqspec(ncmaq),varlist(ncmaq)
@@ -80,8 +82,8 @@
 
     logical  ave1hr
 
-    integer indexcmaq(ncmaq),id_gribdomain  ! 
-     
+    integer indexcmaq(ncmaq),id_gribdomain  !
+
     data cmaqspec(1),gipds1(1),gipds2(1),gipds27(1)/'o3',14,193,1/
     data cmaqspec(2),gipds1(2),gipds2(2),gipds27(2)/'O3_8hr',14,193,8/
     data cmaqspec(3),gipds1(3),gipds2(3),gipds27(3)/'PM25_TOT',13,193,1/
@@ -198,17 +200,10 @@
       nowtime=(ihour+1)*10000
       do nt=1,nhours
 
-       GRID=793
-       if(GRID.eq.793) then   !For HRRR grid
-         im=775
-         jm=488
-         jf=im*jm
-       else
-         call makgds(GRID, kgdss, gdss, lengds, ier)
-         im=kgdss(2)
-         jm=kgdss(3)
-         jf=kgdss(2)*kgdss(3)
-       end if
+       GRID=1144
+       im=1128
+       jm=698
+       jf=im*jm
 !
       base_year=iyear
 !      nowtime=ihour*10000
@@ -216,8 +211,8 @@
 !-- set file unit
       ifilw=52
 
-      write(chtmp,'(i3.3)')nt      
-      write(grib_id,'(i3.3)')id_gribdomain
+      write(chtmp,'(i3.3)')nt
+      write(grib_id,'(i4.4)')id_gribdomain
       call baopen(ifilw,trim(outfile)//'.f'//chtmp//'.'//grib_id//&
                        '.grib2',ierr)
 
@@ -356,7 +351,7 @@
 !-- section 6:
       ibmap=255             ! Bit-map indicator (Table 6.0) (0:A bit map applies, 255:A bit map does not apply)
 !
-   
+
 
      do L=1,nspcmaq
 
@@ -367,7 +362,7 @@
 !       if(varlist(L).ne.'pm25') then
 !         if(varlist(L).eq.'O3_8hr') then
 !             o3_8hr(1:imax,1:jmax,1,nt)=o3_8hr(1:imax,1:jmax,1,nt)*1000
-          
+
 !        bc_data(:,:)=indata(:,:,1,nt)
          print*,"hjp222,L=",L,"varlist(L)=",varlist(L)
          if(varlist(L).eq.'O3_8hr'.and.nt.ge.8) then
@@ -402,7 +397,7 @@
                           coordlist,numcoord,idrsnum,idrstmpl, &
                           idrstmpllen,fld,nx*ny,ibmap,bmap,ierr)
 
-        call gribend(cgrib,max_bytes,lengrib,ierr) 
+        call gribend(cgrib,max_bytes,lengrib,ierr)
         call wryte(ifilw, lengrib, cgrib)
        endif
 
@@ -424,6 +419,5 @@
 
 
        end do   ! nt loop
-         
-  end program aqm_post_grib2
 
+  end program aqm_post_grib2

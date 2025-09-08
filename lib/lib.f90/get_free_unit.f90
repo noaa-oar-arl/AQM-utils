@@ -23,15 +23,15 @@
 integer function get_free_unit ()
 
    implicit none
-   
+
    integer unitno, first, last
    logical open_flag
-   
+
    first = 100				! define allocation range for unit #'s
    last = 99999				! stay away from reserved and
    					! carelessly used low end
    unitno = first
-   
+
    do unitno = first, last
       inquire (unit = unitno, opened = open_flag)
       if (.not. open_flag) then
