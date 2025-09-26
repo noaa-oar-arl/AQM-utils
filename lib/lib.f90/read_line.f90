@@ -45,15 +45,15 @@
 subroutine read_line (filenum, line, line_len, status, line_num)
 
    use stdlit
-      
+
    implicit none
    character line*(*)
    integer filenum, line_len, status, line_num
-   
+
    integer ios, j
-   
+
 ! Scan for first line not starting with an asterisk, and not blank.
-   
+
    read_loop: do
 
       line_num = line_num + 1
@@ -65,12 +65,12 @@ subroutine read_line (filenum, line, line_len, status, line_num)
 
       else if (line(1:1) == '*') then		! reject normal comment line
          cycle read_loop
-      
+
       else
          j = len_trim (line)		! point to last non-space in line
 
          ! Discard end-of-line character, if present.
-         
+
          if (j > 0) then
             if (line(j:j) == cr .or. line(j:j) == ctrl_z) then
                line(j:j) = ' '			! trim off the eol character
@@ -80,12 +80,12 @@ subroutine read_line (filenum, line, line_len, status, line_num)
                line_len = len (line)		! for unix lines, length = dim
             end if
          end if
-      
+
          if (j > 0) exit read_loop		! accept the line if non-blank
       end if					! else j=0, reject blank line
-      
+
    end do read_loop
-   
+
    status = normal
    return				! normal exit with valid data line
 

@@ -31,7 +31,7 @@ Lib    =   ../../lib/sorc/lib.f90
 LIB_NETCDF = -I$(NETCDF)/include ${NETCDF_LDFLAGS}
 
 #F90_CMD   = ${F_COMP}
-F90_CMD   = /opt/cray/pe/craype/2.7.8/bin/ftn 
+F90_CMD   = /opt/cray/pe/craype/2.7.8/bin/ftn
 
 F90_FLAGS4 = -O3
 
@@ -53,8 +53,8 @@ Lib1 =		$(Lib)/config.f90 \
 
 Lib2 =		$(Lib)/date_utils.f90		$(Lib)/get_free_unit.f90 \
 		$(Lib)/get_param_module.f90	$(Lib)/message_nolog.f90 \
-		$(Lib)/netwrite3.no-udunits.f90	$(Lib)/read_line.f90 
-	
+		$(Lib)/netwrite3.no-udunits.f90	$(Lib)/read_line.f90
+
 Lib3 =         $(Lib)/next_time.f90
 
 NETCDF_LIB  =  ${NETCDF_LDFLAGS}  ${NETCDF_LDFLAGS_F}
@@ -82,7 +82,7 @@ Subs.plib =	$(Plib)/expand_filename.f90 \
 
 # Main program.
 
-Subs.main =	$(Subs.lib) $(Subs.plib) 
+Subs.main =	$(Subs.lib) $(Subs.plib)
 
 F90_CLEANUP = *.o *.mod *__genmod.f90
 

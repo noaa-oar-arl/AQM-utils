@@ -1,0 +1,3 @@
+[submodule "python_utils/gdas-cmaqprep"]
+	path = python_utils/gdas-cmaqprep
+	url = https://github.com/noaa-oar-arl/gdas-cmaqprep

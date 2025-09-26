@@ -30,7 +30,7 @@ NUMTS=9
 cat > gefs2lbc-nemsio.ini <<EOF
 &control
  tstepdiff=$tstepdiff
- dtstep=6 
+ dtstep=6
  bndname='dust','coarsepm'
  mofile='gefs-input-$PDY/geaer.t${gefscyc}z.atmf','.nemsio'
  lbcfile='INPUT/gfs_bndy.tile7.','.nc'
@@ -41,13 +41,13 @@ cat > gefs2lbc-nemsio.ini <<EOF
 Species converting Factor
 # Gocart ug/m3 to regional ug/m3
 'dust1'    1  ## 0.2-2um diameter: assuming mean diameter is 0.3 um (volume= 0.01414x10^-18 m3) and density is 2.6x10^3 kg/m3 or 2.6x10^12 ug/m3.so 1 particle = 0.036x10^-6 ug
-'dust'  1.0   
+'dust'  1.0
 'dust2'    2  ## 2-4um
 'dust'  0.714  'coarsepm'  0.286
 'dust3'    1  ## 4-6um
-'coarsepm'  1.0   
+'coarsepm'  1.0
 'dust4'    1   ## 6-12um
-'coarsepm'  1.0 
+'coarsepm'  1.0
 'dust5'    1     # kg/kg
 'coarsepm'  1.0
 EOF

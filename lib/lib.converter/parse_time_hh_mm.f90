@@ -29,7 +29,7 @@ subroutine parse_time_hh_mm (string, suff_req, div5, mins_total, suffix, &
       status, detail)
 
    implicit none
-   
+
    character*(*), intent (in ) :: string	! input time string
    logical,       intent (in ) :: suff_req	! suffix mode, see above
    logical,       intent (in ) :: div5		! true = time must end in 0 or 5
@@ -41,7 +41,7 @@ subroutine parse_time_hh_mm (string, suff_req, div5, mins_total, suffix, &
 ! Local variables.
 
    character*1 hfirst, mlast, h1_min
-   
+
    integer ph2, pcolon, pm1, pm2, plast		! substring pointers into HH:MMx
    integer hours, mins, pm_offset, hh_max
 
@@ -53,19 +53,19 @@ subroutine parse_time_hh_mm (string, suff_req, div5, mins_total, suffix, &
       pm2 = plast - 1
       h1_min = '1'
       hh_max = 12
-   
+
    else					! config for no suffix, 24 hour time
       pm2 = plast
       h1_min = '0'
       hh_max = 23
    end if
-   
+
    ph2    = pm2 - 3				! get substring pointers
    pcolon = pm2 - 2
    pm1    = pm2 - 1
 
 ! Check length of time string.
-   
+
    if (ph2 < 1 .or. ph2 > 2) then		! check length of first part HH
       status = .false.
       detail = 'Invalid time, too many or too few digits.'
@@ -73,15 +73,15 @@ subroutine parse_time_hh_mm (string, suff_req, div5, mins_total, suffix, &
    end if
 
 ! Character mode checks.  Validate HH:MMp time format.
-   
+
    hfirst = string(1:1)
-   
+
    if (hfirst < h1_min .or. hfirst > '9') then
       status = .false.
       detail = 'Hours must start with ' // h1_min // '-9.'	! e.g. 1-9.
       return
    end if
-   
+
    if (string(pcolon:pcolon) /= ':') then
       status = .false.
       detail = 'Missing colon in time string.'
@@ -89,15 +89,15 @@ subroutine parse_time_hh_mm (string, suff_req, div5, mins_total, suffix, &
    end if
 
 ! Validate AM/PM suffix, if required.
-   
+
    suffix = string(plast:plast)			! get suffix char, a or p
    pm_offset = 0				! default for 24 hour mode
-   				
+
    if (suff_req) then				! suffix mode only:
-   
+
       if (suffix == 'a') then			! adjust for AM suffix (a)
          pm_offset = 0
-   
+
       else if (suffix == 'p') then		! adjust for PM suffix (p)
          pm_offset = 12
 
@@ -106,13 +106,13 @@ subroutine parse_time_hh_mm (string, suff_req, div5, mins_total, suffix, &
          status = .false.
          return
       end if
-      
+
    end if
 
 ! If selected, require minutes to end in 0 or 5.
-   
+
    mlast = string(pm2:pm2)
-   
+
    if (div5 .and. mlast /= '0' .and. mlast /= '5') then
       status = .false.
       detail = 'Minutes must end in 0 or 5.'
@@ -120,10 +120,10 @@ subroutine parse_time_hh_mm (string, suff_req, div5, mins_total, suffix, &
    end if
 
 ! Validate hours and minutes.
-   
+
    read (string(1:ph2), *) hours		! convert to integers
    read (string(pm1:pm2), *) mins
-   
+
    if (hours < 0 .or. hours > hh_max .or. mins < 0 .or. mins > 59) then
       status = .false.
       detail = 'Invalid hours or minutes.'
@@ -133,9 +133,9 @@ subroutine parse_time_hh_mm (string, suff_req, div5, mins_total, suffix, &
 ! Convert AM/PM times to 24 hour scale.
 
    if (suff_req .and. hours == 12) hours = 0	! convert 12:xx times to 0:xx
-   
+
    hours = hours + pm_offset		! adjust for AM/PM; okay for both modes
-   
+
    mins_total = hours*60 + mins			! final time, minutes since 0:00
    status = .true.				! normal return
 

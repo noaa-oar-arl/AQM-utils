@@ -20,7 +20,7 @@
 subroutine anglical_str (str)
 
    implicit none
-   
+
    character(*), intent(inout) :: str	! ASCII character string, possibly
    					! incl. uppercase and diacritical chars.
    					! Output string overwrites input string.
@@ -29,28 +29,28 @@ subroutine anglical_str (str)
    character (len=*), parameter :: &
       accent='ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ', &
       normal='aaaaaaceeeeiiiinoooooouuuuyaaaaaaceeeeiiiionoooooouuuuyy'
-   
+
    integer, parameter :: lc_offset = ichar('a') - ichar('A')
-   
+
    character c
    integer i, slen, j
 
 ! Convert one char at a time.  Overwrite only chars to be changed.
-   
-   slen = len_trim (str)		
+
+   slen = len_trim (str)
 
    do i = 1, slen
       c = str(i:i)				! get next char to investigate
-   
+
       if (c >= 'A' .and. c <= 'Z') then		! normal uppercase A-Z?
          str(i:i) = char(ichar(c) + lc_offset)	! yes, convert to std lowercase
-	
+
       else
          j = index (accent, c)			! in u/l diacritical char list?
          if (j > 0) then
             str(i:i) = normal(j:j)		! yes, convert to std lowercase
          end if
-      
+
       end if					! all other chars: no change
    end do
 

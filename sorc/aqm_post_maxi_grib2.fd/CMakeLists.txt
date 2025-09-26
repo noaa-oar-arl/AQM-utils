@@ -7,7 +7,7 @@ set(FLIB "${LIB_DIR}/lib.f90")
 message("=== AQM library directory: ${LIB_DIR}")
 
 list(APPEND SRC_FLIB1
-    ${FLIB}/config.f90 
+    ${FLIB}/config.f90
     ${FLIB}/stdlit.f90
     ${FLIB}/read_netcdf_var.f90
     ${FLIB}/string_utils.f90
@@ -15,9 +15,9 @@ list(APPEND SRC_FLIB1
 
 list(APPEND SRC_FLIB2
     ${FLIB}/date_utils.f90
-    ${FLIB}/expand_filename.f90    
+    ${FLIB}/expand_filename.f90
     ${FLIB}/get_free_unit.f90
-    ${FLIB}/get_param_module.f90     
+    ${FLIB}/get_param_module.f90
     ${FLIB}/message_nolog.f90
     ${FLIB}/netwrite3.no-udunits.f90
     ${FLIB}/next_time.f90
@@ -28,7 +28,7 @@ list(APPEND SRC_BLIB
     ${BLIB}/read_grid_coords.f90
     ${BLIB}/read_gridded_aqm.f90
     ${BLIB}/read_gridded_hourly.f90
-    ${BLIB}/read_gridded_vars.f90   
+    ${BLIB}/read_gridded_vars.f90
     ${BLIB}/read_table_lines.f90)
 
 list(APPEND lib_src

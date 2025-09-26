@@ -25,12 +25,12 @@ subroutine lowercase (string)
 
    implicit none
    character string*(*)
-   
+
    character c*1
    integer length, i
-   
+
    length = len_trim (string)
-   
+
    if (length.gt.0) then
       do i = 1, length
          c = string(i:i)
@@ -39,7 +39,7 @@ subroutine lowercase (string)
          end if
       end do
    end if
-   
+
    return
 
 end subroutine lowercase

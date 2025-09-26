@@ -23,7 +23,7 @@ subroutine write_global_att_dbl (attname, value)
 
    use netcdf
    implicit none
-   
+
    character,        intent (in) :: attname*(*)
    double precision, intent (in) :: value
 
@@ -39,7 +39,7 @@ subroutine write_global_att_float (attname, value)
 
    use netcdf
    implicit none
-   
+
    character, intent (in) :: attname*(*)
    real,      intent (in) :: value
 
@@ -55,7 +55,7 @@ subroutine write_global_att_int (attname, value)
 
    use netcdf
    implicit none
-   
+
    character, intent (in) :: attname*(*)
    integer,   intent (in) :: value
 
@@ -71,7 +71,7 @@ subroutine write_global_att_str (attname, value)
 
    use netcdf
    implicit none
-   
+
    character, intent (in) :: attname*(*)
    character, intent (in) :: value*(*)
 

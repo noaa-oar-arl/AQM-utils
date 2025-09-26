@@ -32,16 +32,16 @@ subroutine check (status, location)
 
    integer,                intent (in) :: status	! Netcdf return code
    character(*), optional, intent (in) :: location	! location ID string
-   
+
    if (status /= nf90_noerr) then
       print *, '*** Netcdf error number ', status
       print *, '*** ', trim (nf90_strerror (status))
-      
+
       if (present (location)) then
          print *, '*** Error detected in ' // trim (location)
       end if
-      
+
       call exit (99)
    end if
-   
+
 end subroutine check

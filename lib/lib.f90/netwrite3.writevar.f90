@@ -76,7 +76,7 @@ subroutine writevar_1d_dbl (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*),     intent(in) :: varexp	! name and subscripts of array
    character(*),     intent(in) :: long_name	! long name attribute
    character(*),     intent(in) :: units	! units attribute string
@@ -84,9 +84,9 @@ subroutine writevar_1d_dbl (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    double precision, intent(in) :: vmiss	! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_dbl (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -101,7 +101,7 @@ subroutine writevar_2d_dbl (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*),     intent(in) :: varexp	! name and subscripts of array
    character(*),     intent(in) :: long_name	! long name attribute
    character(*),     intent(in) :: units	! units attribute string
@@ -109,9 +109,9 @@ subroutine writevar_2d_dbl (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    double precision, intent(in) :: vmiss	! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_dbl (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -126,7 +126,7 @@ subroutine writevar_3d_dbl (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*),     intent(in) :: varexp	! name and subscripts of array
    character(*),     intent(in) :: long_name	! long name attribute
    character(*),     intent(in) :: units	! units attribute string
@@ -134,9 +134,9 @@ subroutine writevar_3d_dbl (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    double precision, intent(in) :: vmiss	! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_dbl (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -151,7 +151,7 @@ subroutine writevar_4d_dbl (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*),     intent(in) :: varexp	! name and subscripts of array
    character(*),     intent(in) :: long_name	! long name attribute
    character(*),     intent(in) :: units	! units attribute string
@@ -159,9 +159,9 @@ subroutine writevar_4d_dbl (varexp, long_name, units, vdata, vmiss)
    						   !   intended dimensions
    double precision, intent(in) :: vmiss	! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_dbl (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -176,7 +176,7 @@ subroutine writevar_5d_dbl (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*),     intent(in) :: varexp	! name and subscripts of array
    character(*),     intent(in) :: long_name	! long name attribute
    character(*),     intent(in) :: units	! units attribute string
@@ -184,9 +184,9 @@ subroutine writevar_5d_dbl (varexp, long_name, units, vdata, vmiss)
    						     !   intended dimensions
    double precision, intent(in) :: vmiss	! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_dbl (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -201,7 +201,7 @@ subroutine writevar_1d_float (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -209,9 +209,9 @@ subroutine writevar_1d_float (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    real,         intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_float (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -226,7 +226,7 @@ subroutine writevar_2d_float (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -234,9 +234,9 @@ subroutine writevar_2d_float (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    real,         intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_float (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -251,7 +251,7 @@ subroutine writevar_3d_float (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -259,9 +259,9 @@ subroutine writevar_3d_float (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    real,         intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_float (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -276,7 +276,7 @@ subroutine writevar_4d_float (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -284,9 +284,9 @@ subroutine writevar_4d_float (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    real,         intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_float (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -301,7 +301,7 @@ subroutine writevar_5d_float (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -309,9 +309,9 @@ subroutine writevar_5d_float (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    real,         intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_float (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -326,7 +326,7 @@ subroutine writevar_1d_int (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -334,9 +334,9 @@ subroutine writevar_1d_int (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer,      intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_int (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -351,7 +351,7 @@ subroutine writevar_2d_int (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -359,9 +359,9 @@ subroutine writevar_2d_int (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer,      intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_int (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -376,7 +376,7 @@ subroutine writevar_3d_int (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -384,9 +384,9 @@ subroutine writevar_3d_int (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer,      intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_int (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -401,7 +401,7 @@ subroutine writevar_4d_int (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -409,9 +409,9 @@ subroutine writevar_4d_int (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer,      intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_int (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -426,7 +426,7 @@ subroutine writevar_5d_int (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -434,9 +434,9 @@ subroutine writevar_5d_int (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer,      intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_int (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -451,7 +451,7 @@ subroutine writevar_1d_short (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -459,9 +459,9 @@ subroutine writevar_1d_short (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer*2,    intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_short (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -476,7 +476,7 @@ subroutine writevar_2d_short (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -484,9 +484,9 @@ subroutine writevar_2d_short (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer*2,    intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_short (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -501,7 +501,7 @@ subroutine writevar_3d_short (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -509,9 +509,9 @@ subroutine writevar_3d_short (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer*2,    intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_short (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -526,7 +526,7 @@ subroutine writevar_4d_short (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -534,9 +534,9 @@ subroutine writevar_4d_short (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer*2,    intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_short (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -551,7 +551,7 @@ subroutine writevar_5d_short (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent(in) :: varexp		! name and subscripts of array
    character(*), intent(in) :: long_name	! long name attribute
    character(*), intent(in) :: units		! units attribute string
@@ -559,9 +559,9 @@ subroutine writevar_5d_short (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    integer*2,    intent(in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
- 
+
    call var_create_short (varexp, shape(vdata), long_name, units, vmiss, varid)
    				! define new variable & write standard attribs.
 
@@ -580,7 +580,7 @@ subroutine writevar_1d_str (varexp, long_name, units, vdata, vmiss)
 
    use netcdf
    implicit none
-   
+
    character(*), intent (in) :: varexp		! name and subscripts of array
    character(*), intent (in) :: long_name	! long name attribute
    character(*), intent (in) :: units		! units attribute string
@@ -588,11 +588,11 @@ subroutine writevar_1d_str (varexp, long_name, units, vdata, vmiss)
    						!   intended dimensions
    character(*), intent (in) :: vmiss		! missing value attribute
    						! 0 = DO NOT ADD MISSING VALUE
-   
+
    integer varid				! local variable
-   
+
    character(len(vdata)), dimension (size(vdata)) :: vcopy  ! local copy buffer
- 
+
    call var_create_str (varexp, len (vdata), shape (vdata), long_name, units, &
       vmiss, varid)		! define new variable & write standard attribs.
 
@@ -600,10 +600,10 @@ subroutine writevar_1d_str (varexp, long_name, units, vdata, vmiss)
 !!   print *, 'writevar_1d_str: len   (vdata) = ', len (vdata)
 !!   print *, 'writevar_1d_str: size  (vdata) = ', size (vdata)
 !!   print *, 'writevar_1d_str: Call nf90_put_var.'
-   
+
    vcopy = vdata		! make local copy of character array to work
    				! around substring passing bug in some compilers
-   
+
    call netwrite3_sync				   ! switch to data mode, etc.
    call check (nf90_put_var (fid, varid, vcopy))   ! write entire data array
 
