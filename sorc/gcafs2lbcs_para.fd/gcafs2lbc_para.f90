@@ -210,8 +210,8 @@
       call check(nf90_inq_dimid(mcid,'grid_yt',iddim_yt))
       call check(nf90_inquire_dimension(mcid,iddim_yt,len=jgocart))
       call check(nf90_inq_dimid(mcid,'pfull',iddim_pfull))
-      call check(nf90_inquire_dimension(mcid,iddim_pfull,len=kgocart))      
-      
+      call check(nf90_inquire_dimension(mcid,iddim_pfull,len=kgocart))
+
        print *,trim(aline),'igocart=',igocart,       &
         'jgocart=',jgocart,'kgocart=',kgocart
 
@@ -224,7 +224,7 @@
        allocate(tgocart(igocart,jgocart,kgocart),STAT=ierr)
        allocate(airgocart(igocart,jgocart,kgocart),STAT=ierr)
        allocate(vgocart(igocart,jgocart,kgocart),STAT=ierr)
- 
+
        allocate(tmpa(kgocart+1),STAT=ierr)
 
        call check(nf90_inq_varid(mcid,'lon',idvar_glon))
@@ -325,18 +325,18 @@
        call check(nf90_get_var(mcid,idvar_hgtsfc,zgocart(:,:,kgocart+1))) ! surface elevation
        call check(nf90_inq_varid(mcid,'delz',idvar_delz))
        call check(nf90_get_var(mcid,idvar_delz,delz))  ! delz is negative
-       
+
        call check(nf90_inq_varid(mcid,'pressfc',idvar_pressfc))
        call check(nf90_get_var(mcid,idvar_pressfc,pgocart(:,:,kgocart+1)))
        call check(nf90_inq_varid(mcid,'dpres',idvar_dpres))
        call check(nf90_get_var(mcid,idvar_dpres,dpres))
-       
+
        call check(nf90_inq_varid(mcid,'tmp',idvar_tmp))
        call check(nf90_get_var(mcid,idvar_tmp,tgocart))
        call check(nf90_inq_varid(mcid,'spfh',idvar_spfh))
        call check(nf90_get_var(mcid,idvar_spfh,airgocart)) ! specific humidity (kg/kg)
 
-       do k=kgocart,1,-1        
+       do k=kgocart,1,-1
 	do i=1,igocart
 	 do j=1,jgocart
          zgocart(i,j,k)=zgocart(i,j,k+1)-delz(i,j,k)             ! top down, interface height
@@ -344,7 +344,7 @@
 	 tv=tgocart(i,j,k)*(1+0.608*amax1(airgocart(i,j,k),1.e-15))  ! virtual temperature
 	 airgocart(i,j,k)=(pgocart(i,j,k)+pgocart(i,j,k+1))*0.5/tv/287.04 ! air density in kg/m3  R= 287.04 m3 Pa /kg/K
 	 enddo
-	enddo 
+	enddo
        enddo
 
       if(iprint.eq.1.and.my_rank.eq.0) then
@@ -355,7 +355,7 @@
 	write(31,rec=3)tgocart
 	write(31,rec=4)airgocart
 	close(31)
-      endif	 
+      endif
 ! ---find vertical index for top and bottom LBC
 	do i=1,imax
 	 do j=1,nhalo
@@ -431,7 +431,7 @@
          enddo
        enddo
       enddo
-      
+
       if(iprint.eq.1.and.my_rank.eq.0) then
  	 open(30,file='bndcoordx.bin',form='unformatted',access='direct', &
 	    recl=imax*nhalo*4)
@@ -444,15 +444,15 @@
 	 enddo
 	 do k=1,kmax
 	   write(30,rec=4+kmax+k) bndcoordx(:,:,2,2+k) ! k in bottom
-	 enddo  
+	 enddo
 	 close(30)
-      endif 
+      endif
   ! begin species interpolation
   do L1=1,ngocart
 
     call check(nf90_inq_varid(mcid,gocartname(L1),idvar_spname))
     call check(nf90_get_var(mcid,idvar_spname,vgocart))
-       
+
     if(gocartname(L1).eq.'bc2'.and.iprint.eq.1.and.my_rank.eq.0) then
       write(27,rec=1)vgocart(:,:,kgocart)
       write(27,rec=2)airgocart(:,:,kgocart)
@@ -463,7 +463,7 @@
      do j=1,jgocart
        if(vgocart(i,j,k).gt.1e18) vgocart(i,j,k)=0. ! for undefine bug
        if(gocartname(L1).eq.'o3mr') vgocart(i,j,k)=vgocart(i,j,k)*1e6/48*28.97 ! kg/kg -> ppmV
-               ! SO2 already in ppmv, GCAFS aerosol is already in ug/kg 
+               ! SO2 already in ppmv, GCAFS aerosol is already in ug/kg
      enddo
     enddo
    enddo
@@ -559,7 +559,7 @@
 	    tmpbndx(1:imax,1:nhalo,1:kmax)=tmpbndx(1:imax,1:nhalo,1:kmax)+ &
 	      bndx(1:imax,1:nhalo,1:kmax,m,L)
 	  else
-	    tmpbndx(1:imax,1:nhalo,1:kmax)=bndx(1:imax,1:nhalo,1:kmax,m,L)    
+	    tmpbndx(1:imax,1:nhalo,1:kmax)=bndx(1:imax,1:nhalo,1:kmax,m,L)
 	    if(index(bndname(L),'aecj').gt.0) then
 	     if(iprint.eq.1.and.my_rank.eq.0.and.m.eq.1) then
 	       open(29,file='aecj_top.bin',form='unformatted',access='direct',recl=imax*nhalo*kmax*4)
