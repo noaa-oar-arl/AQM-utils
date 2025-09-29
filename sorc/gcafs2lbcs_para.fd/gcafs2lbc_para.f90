@@ -46,9 +46,9 @@
        airgocart(:,:,:),tgocart(:,:,:),zhx(:,:,:,:),zhy(:,:,:,:),tmpbndx(:,:,:),tmpbndy(:,:,:)
 
       character bndname(nspecies)*16,gocartname(ngocart)*8,ctmp*16,  &
-       echar(nspecies)*16,mofile(2)*200,checkname(nspecies)*16,     &
-       aline*200,gdatatype*4,modelname*4,gtype*16,arank*2, topofile*200, &
-       lbcfile(2)*200
+       echar(nspecies)*16,mofile(2)*2000,checkname(nspecies)*16,     &
+       aline*200,gdatatype*4,modelname*4,gtype*16,arank*2, topofile*2000, &
+       lbcfile(2)*2000
 
       integer netindex(ngocart),checklayer,modate(maxfile),         &
        mosecs(maxfile),julian,ismotime(maxfile),iemotime(maxfile),  &
