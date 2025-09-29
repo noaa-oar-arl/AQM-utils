@@ -24,7 +24,7 @@ if [ ! -s OUTPUT ]; then
 fi
 # cp -pL INPUT/aqm.t${cyc}z.gfs_bndy.tile7.f???.nc OUTPUT/
 
-# 24 hours
+# 12 hours
 NUMTS=3
 
 cat > gcafs2lbc.ini <<EOF
